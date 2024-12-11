@@ -20,7 +20,7 @@
          "dotenv/config"
       ]
    },
-   "author": "Stanislav Dzisiak",
+   "author": "Zahar Solovcov",
    "license": "ISC",
    "repository": {
       "type": "git",
