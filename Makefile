@@ -13,13 +13,14 @@ prepare:
 	cp -n .env.example .env || true
 
 start:
-	heroku local -f Procfile.dev
+	start-frontend
+	start-backend
 
 start-backend:
 	npm start -- --watch --verbose-watch --ignore-watch='node_modules .git .sqlite'
 
 start-frontend:
-	npx webpack --watch --progress
+	npx webpack
 
 lint:
 	npx eslint .
