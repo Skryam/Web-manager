@@ -24,6 +24,7 @@ export default {
     layouts: {
       application: {
         users: 'Пользователи',
+        lang: 'EN',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -47,8 +48,8 @@ export default {
       },
       welcome: {
         index: {
-          hello: 'Привет от Хекслета!',
-          description: 'Практические курсы по программированию',
+          hello: 'Веб Менеджер',
+          description: 'Онлайн веб менеджер',
           more: 'Узнать Больше',
         },
       },

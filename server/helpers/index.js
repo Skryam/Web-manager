@@ -7,6 +7,12 @@ export default (app) => ({
   route(name) {
     return app.reverse(name);
   },
+  async changeLanguage(lng) {
+    await i18next.changeLanguage(lng, (err, t) => {
+      if (err) return console.log('something went wrong loading', err);
+      return t('key');
+    });
+  },
   t(key) {
     return i18next.t(key);
   },

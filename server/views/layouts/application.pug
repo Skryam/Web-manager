@@ -19,6 +19,7 @@ html(lang="en")
             ul.navbar-nav.mr-auto
               li.nav-item
                 a.nav-link(href=route('users'))= t('layouts.application.users')
+          button.btn.long-button(onclick= changeLanguage('ru'))= t('layouts.application.lang')
           ul.navbar-nav
             if isAuthenticated()
               li.nav-item

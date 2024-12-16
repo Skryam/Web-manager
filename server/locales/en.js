@@ -24,6 +24,7 @@ export default {
     layouts: {
       application: {
         users: 'Users',
+        lang: 'RU',
         signIn: 'Login',
         signUp: 'Register',
         signOut: 'Logout',
@@ -47,8 +48,8 @@ export default {
       },
       welcome: {
         index: {
-          hello: 'Hello from Hexlet!',
-          description: 'Online programming school',
+          hello: 'Web Manager',
+          description: 'Online web manager',
           more: 'Learn more',
         },
       },
