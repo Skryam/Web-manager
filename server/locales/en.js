@@ -41,6 +41,9 @@ export default {
         id: 'ID',
         email: 'Email',
         createdAt: 'Created at',
+        actions: 'Actions',
+        edit: 'Edit',
+        delete: 'Delete',
         new: {
           submit: 'Register',
           signUp: 'Register',
