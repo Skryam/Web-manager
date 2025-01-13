@@ -1,6 +1,9 @@
 extends ../layouts/application.pug
 
 block content
+  if isAuthenticated()
+    p= currentUser.id
+
   table.table.table-striped
     thead
       tr
@@ -16,7 +19,8 @@ block content
           td= formatDate(user.createdAt)
           td
             div.d-flex.flex-wrap
-              a.btn.btn-primary.me-1(href="#")= t('views.users.edit')
-              form(action = '#', method="post")
-                input(name="_method" type="hidden" value=method)
-                input.btn.btn-danger(type='submit', value=t('views.users.delete'))
+              if isAuthenticated() && currentUser.id === user.id
+                a.btn.btn-primary.me-1(href="#")= t('views.users.edit')
+                form(action= `/users/${user.id}`, method="post")
+                  input(name="_method" type="hidden" value='delete')
+                  input.btn.btn-danger(type='submit', value=t('views.users.delete'))

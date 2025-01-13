@@ -5,8 +5,9 @@ import i18next from 'i18next';
 export default (app) => {
   app
     .get('/users', { name: 'users' }, async (req, reply) => {
+      const currentUser = req.user;
       const users = await app.objection.models.user.query();
-      reply.render('users/index', { users });
+      reply.render('users/index', { users, currentUser });
       return reply;
     })
     .get('/users/new', { name: 'newUser' }, (req, reply) => {
@@ -28,5 +29,9 @@ export default (app) => {
       }
 
       return reply;
+    })
+    .delete('/users/:id', async (req, reply) => {
+      const { id } = req.user;
+      
     });
 };
