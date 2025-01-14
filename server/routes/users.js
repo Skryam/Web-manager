@@ -31,7 +31,9 @@ export default (app) => {
       return reply;
     })
     .delete('/users/:id', async (req, reply) => {
-      const { id } = req.user;
-      
+      const { id } = req.params;
+      req.logOut();
+      await app.objection.models.user.query().deleteById(id);
+      return req.flash('info', 'norm');
     });
 };
