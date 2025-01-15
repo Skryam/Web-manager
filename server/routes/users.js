@@ -34,6 +34,7 @@ export default (app) => {
       const { id } = req.params;
       req.logOut();
       await app.objection.models.user.query().deleteById(id);
-      return req.flash('info', 'norm');
+      req.flash('info', 'norm');
+      return reply.redirect('/users');
     });
 };
