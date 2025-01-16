@@ -6,6 +6,7 @@ export default (app) => {
   app
     .get('/users', { name: 'users' }, async (req, reply) => {
       const currentUser = req.user;
+      console.log(currentUser);
       const users = await app.objection.models.user.query();
       reply.render('users/index', { users, currentUser });
       return reply;
@@ -30,11 +31,13 @@ export default (app) => {
 
       return reply;
     })
-    .delete('/users/:id', async (req, reply) => {
+    .get('/users/:id/edit', { name: 'editUser' }, (req, reply) => reply.render('users/edit'))
+    .patch('/users/:id', { name: 'patchUser' }, (req, reply) => reply.send({ norm: 'norm' }))
+    .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
       const { id } = req.params;
       req.logOut();
       await app.objection.models.user.query().deleteById(id);
-      req.flash('info', 'norm');
+      req.flash('info', i18next.t('flash.users.delete.success'));
       return reply.redirect('/users');
     });
 };

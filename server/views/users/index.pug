@@ -20,7 +20,7 @@ block content
           td
             div.d-flex.flex-wrap
               if isAuthenticated() && currentUser.id === user.id
-                a.btn.btn-primary.me-1(href="#")= t('views.users.edit')
+                a.btn.btn-primary.me-1(href=`/users/${user.id}/edit`)= t('views.users.editbtn')
                 form(action= `/users/${user.id}`, method="post")
                   input(name="_method" type="hidden" value='delete')
                   input.btn.btn-danger(type='submit', value=t('views.users.delete'))
