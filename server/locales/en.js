@@ -21,6 +21,10 @@ export default {
         delete: {
           success: 'User deleted successfully',
         },
+        patch: {
+          success: 'User successfully changed',
+          error: 'Failed to change user',
+        },
       },
       authError: 'Access denied! Please login',
     },
@@ -36,6 +40,8 @@ export default {
     views: {
       session: {
         new: {
+          email: 'email',
+          password: 'password',
           signIn: 'Login',
           submit: 'Login',
         },
@@ -48,6 +54,8 @@ export default {
         editbtn: 'Edit',
         delete: 'Delete',
         new: {
+          email: 'email',
+          password: 'password',
           submit: 'Register',
           signUp: 'Register',
         },

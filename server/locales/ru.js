@@ -21,6 +21,10 @@ export default {
         delete: {
           success: 'Пользователь успешно удален',
         },
+        patch: {
+          success: 'Пользователь успешно изменён',
+          error: 'Не удалось изменить пользователя',
+        },
       },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
     },
@@ -36,6 +40,8 @@ export default {
     views: {
       session: {
         new: {
+          email: 'email',
+          password: 'пароль',
           signIn: 'Вход',
           submit: 'Войти',
         },
@@ -48,6 +54,8 @@ export default {
         editbtn: 'Изменить',
         delete: 'Удалить',
         new: {
+          email: 'email',
+          password: 'пароль',
           submit: 'Сохранить',
           signUp: 'Регистрация',
         },

@@ -26,17 +26,41 @@ export default (app) => {
         reply.redirect(app.reverse('root'));
       } catch ({ data }) {
         req.flash('error', i18next.t('flash.users.create.error'));
-        reply.render('users/new', { user, errors: data });
+        reply.redirect('users/new', { user, errors: data });
       }
 
       return reply;
     })
-    .get('/users/:id/edit', { name: 'editUser' }, (req, reply) => reply.render('users/edit'))
-    .patch('/users/:id', { name: 'patchUser' }, (req, reply) => reply.send({ norm: 'norm' }))
+    .get('/users/:id/edit', { name: 'editUser' }, (req, reply) => {
+      if (!req.user || req.user.id !== Number(req.params.id)) {
+        req.flash('error', i18next.t('flash.authError'));
+        return reply.redirect(app.reverse('root'));
+      }
+      return reply.render('users/edit', { data: req.user });
+    })
+    .patch('/users/:id', { name: 'patchUser' }, async (req, reply) => {
+      const user = new app.objection.models.user();
+      user.$set(req.body.data);
+
+      try {
+        const validUser = await app.objection.models.user.fromJson(req.body.data);
+        await app.objection.models.user.query().findById(req.user.id).patch(validUser);
+        req.flash('info', i18next.t('flash.users.patch.success'));
+        reply.redirect(app.reverse('users'));
+      } catch ({ data }) {
+        req.flash('error', i18next.t('flash.users.patch.error'));
+        reply.redirect(`users/${req.user.id}/edit`, { user, errors: data });
+      }
+
+      return reply;
+    })
     .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
-      const { id } = req.params;
+      if (!req.user || req.user.id !== Number(req.params.id)) {
+        req.flash('error', i18next.t('flash.authError'));
+        return reply.redirect(app.reverse('root'));
+      }
       req.logOut();
-      await app.objection.models.user.query().deleteById(id);
+      await app.objection.models.user.query().deleteById(req.params.id);
       req.flash('info', i18next.t('flash.users.delete.success'));
       return reply.redirect('/users');
     });
