@@ -39,17 +39,16 @@ export default (app) => {
       return reply.render('users/edit', { data: req.user });
     })
     .patch('/users/:id', { name: 'patchUser' }, async (req, reply) => {
-      const user = new app.objection.models.user();
-      user.$set(req.body.data);
+      const newData = req.body.data;
 
       try {
-        const validUser = await app.objection.models.user.fromJson(req.body.data);
-        await app.objection.models.user.query().findById(req.user.id).patch(validUser);
+        const person = await app.objection.models.user.query().findById(req.user.id);
+        await person.$query().patch({ email: newData.email, password: newData.password });
         req.flash('info', i18next.t('flash.users.patch.success'));
         reply.redirect(app.reverse('users'));
-      } catch ({ data }) {
+      } catch (err) {
         req.flash('error', i18next.t('flash.users.patch.error'));
-        reply.redirect(`users/${req.user.id}/edit`, { user, errors: data });
+        reply.render('users/edit', { data: req.user, errors: err });
       }
 
       return reply;
