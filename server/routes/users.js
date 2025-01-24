@@ -6,7 +6,6 @@ export default (app) => {
   app
     .get('/users', { name: 'users' }, async (req, reply) => {
       const currentUser = req.user;
-      console.log(currentUser);
       const users = await app.objection.models.user.query();
       reply.render('users/index', { users, currentUser });
       return reply;
@@ -24,18 +23,15 @@ export default (app) => {
         await app.objection.models.user.query().insert(validUser);
         req.flash('info', i18next.t('flash.users.create.success'));
         reply.redirect(app.reverse('root'));
-      } catch ({ data }) {
+      } catch (errors) {
         req.flash('error', i18next.t('flash.users.create.error'));
-        reply.redirect('users/new', { user, errors: data });
+        reply.render('users/new', { user, errors });
       }
 
       return reply;
     })
     .get('/users/:id/edit', { name: 'editUser' }, (req, reply) => {
-      if (!req.user || req.user.id !== Number(req.params.id)) {
-        req.flash('error', i18next.t('flash.authError'));
-        return reply.redirect(app.reverse('root'));
-      }
+      app.authenticate(req, reply);
       return reply.render('users/edit', { data: req.user });
     })
     .patch('/users/:id', { name: 'patchUser' }, async (req, reply) => {
@@ -54,10 +50,7 @@ export default (app) => {
       return reply;
     })
     .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
-      if (!req.user || req.user.id !== Number(req.params.id)) {
-        req.flash('error', i18next.t('flash.authError'));
-        return reply.redirect(app.reverse('root'));
-      }
+      app.authenticate(req, reply);
       req.logOut();
       await app.objection.models.user.query().deleteById(req.params.id);
       req.flash('info', i18next.t('flash.users.delete.success'));

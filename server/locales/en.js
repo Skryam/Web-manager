@@ -35,6 +35,7 @@ export default {
         signIn: 'Login',
         signUp: 'Register',
         signOut: 'Logout',
+        statuses: 'Statuses',
       },
     },
     views: {
@@ -74,6 +75,10 @@ export default {
           description: 'Online web manager',
           more: 'Learn more',
         },
+      },
+      statuses: {
+        status: 'Statuses',
+        create: 'Create status',
       },
     },
   },
