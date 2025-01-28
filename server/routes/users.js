@@ -35,6 +35,7 @@ export default (app) => {
       return reply.render('users/edit', { data: req.user });
     })
     .patch('/users/:id', { name: 'patchUser' }, async (req, reply) => {
+      app.authenticate(req, reply);
       const newData = req.body.data;
 
       try {

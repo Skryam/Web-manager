@@ -70,6 +70,51 @@ describe('test users CRUD', () => {
     expect(user).toMatchObject(expected);
   });
 
+  it('patch / delete', async () => {
+    const params = testData.users.new;
+    const responseSignIn = await app.inject({
+      method: 'POST',
+      url: app.reverse('session'),
+      payload: {
+        data: params,
+      },
+    });
+
+    expect(responseSignIn.statusCode).toBe(302);
+    // после успешной аутентификации получаем куки из ответа,
+    // они понадобятся для выполнения запросов на маршруты требующие
+    // предварительную аутентификацию
+    const user = await models.user.query().findOne({ email: params.email });
+    const [sessionCookie] = responseSignIn.cookies;
+    const { name, value } = sessionCookie;
+    const cookie = { [name]: value };
+    console.log(user);
+
+    const responseEdit = await app.inject({
+      method: 'GET',
+      url: `/users/${user.id}`,
+      // используем полученные ранее куки
+      cookies: cookie,
+    });
+
+    expect(responseEdit.statusCode).toBe(200);
+
+    const responsePatch = await app.inject({
+      method: 'PATCH',
+      url: `/users/${user.id}`,
+      cookies: cookie,
+    });
+
+    expect(responsePatch.statusCode).toBe(302);
+
+    const expected = {
+      ..._.omit(params, 'password'),
+      passwordDigest: encrypt(params.password),
+    };
+    const patchedUser = await models.user.query().findOne({ id: user.id });
+    expect(patchedUser).toMatchObject(expected);
+  });
+
   afterEach(async () => {
     // Пока Segmentation fault: 11
     // после каждого теста откатываем миграции
