@@ -71,12 +71,14 @@ describe('test users CRUD', () => {
   });
 
   it('patch / delete', async () => {
-    const params = testData.users.new;
+    const paramsNew = testData.users.new;
+    const paramsPatched = testData.users.patched;
+
     const responseSignIn = await app.inject({
       method: 'POST',
       url: app.reverse('session'),
       payload: {
-        data: params,
+        data: paramsNew,
       },
     });
 
@@ -84,7 +86,7 @@ describe('test users CRUD', () => {
     // после успешной аутентификации получаем куки из ответа,
     // они понадобятся для выполнения запросов на маршруты требующие
     // предварительную аутентификацию
-    const user = await models.user.query().findOne({ email: params.email });
+    const user = await models.user.query().findOne({ email: paramsNew.email });
     const [sessionCookie] = responseSignIn.cookies;
     const { name, value } = sessionCookie;
     const cookie = { [name]: value };
@@ -92,7 +94,7 @@ describe('test users CRUD', () => {
 
     const responseEdit = await app.inject({
       method: 'GET',
-      url: `/users/${user.id}`,
+      url: `/users/${user.id}/edit`,
       // используем полученные ранее куки
       cookies: cookie,
     });
@@ -102,17 +104,29 @@ describe('test users CRUD', () => {
     const responsePatch = await app.inject({
       method: 'PATCH',
       url: `/users/${user.id}`,
+      payload: {
+        data: paramsPatched,
+      },
       cookies: cookie,
     });
 
     expect(responsePatch.statusCode).toBe(302);
 
     const expected = {
-      ..._.omit(params, 'password'),
-      passwordDigest: encrypt(params.password),
+      ..._.omit(paramsPatched, 'password'),
+      passwordDigest: encrypt(paramsPatched.password),
     };
     const patchedUser = await models.user.query().findOne({ id: user.id });
     expect(patchedUser).toMatchObject(expected);
+
+    const responseDelete = await app.inject({
+      method: 'DELETE',
+      url: `/users/${user.id}`,
+      cookies: cookie,
+    });
+
+    expect(responseDelete.statusCode).toBe(302);
+    expect(await models.user.query().findOne({ id: user.id })).toBeUndefined();
   });
 
   afterEach(async () => {
