@@ -1,0 +1,8 @@
+extends ../layouts/application.pug
+
+block content
+  h2.display-4.fw-bold.mt-4= t('views.statuses.new.create')
+
+  +formFor()(action= route('statuses') method='post')
+    +input(status, 'name', errors, t('views.statuses.new.name'))(type="text")
+    +submit(status)(value=t('views.statuses.new.createButton'))

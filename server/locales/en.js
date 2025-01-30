@@ -26,6 +26,16 @@ export default {
           error: 'Failed to change user',
         },
       },
+      statuses: {
+        create: {
+          success: 'Status created successfully',
+          error: 'Failed to create status',
+        },
+        patch: {
+          success: 'Status successfully changed',
+          error: 'Failed to change status',
+        },
+      },
       authError: 'Access denied! Please login',
     },
     layouts: {
@@ -79,6 +89,19 @@ export default {
       statuses: {
         status: 'Statuses',
         create: 'Create status',
+        name: 'Name',
+        creationDate: 'Creation date',
+        editbtn: 'Change',
+        delete: 'Delete',
+        new: {
+          create: 'Status creation',
+          name: 'Name',
+          createButton: 'Create',
+        },
+        edit: {
+          change: 'Status change',
+          changeButton: 'Change',
+        },
       },
     },
   },

@@ -2,16 +2,24 @@ extends ../layouts/application.pug
 
 block content
   h2.display-4.fw-bold.mt-4= t('views.statuses.status')
-  +buttonTo('#', get)
+  a.btn.btn-primary(href=route('newStatus'))= t('views.statuses.create')
 
   table.table.table-borderless.table-striped.mt-5.bg-white
     thead
       tr
-        th= 'id'
-        th= 'name'
-        th= 'date'
+        th= 'ID'
+        th= t('views.statuses.name')
+        th= t('views.statuses.creationDate')
+        th
     tbody
-      tr
-        td= 'user.id'
-        td= 'user.email'
-        td= 'formatDate(user.createdAt)'
+      each status in statuses
+        tr
+          td= status.id
+          td= status.name
+          td= formatDate(status.createdAt)
+          td
+            div.d-flex.flex-wrap
+              a.btn.btn-primary.me-1(href=`/statuses/${status.id}/edit`)= t('views.statuses.editbtn')
+              form(action= `/statuses/${status.id}`, method="post")
+                input(name="_method" type="hidden" value='delete')
+                input.btn.btn-danger(type='submit', value=t('views.statuses.delete'))
