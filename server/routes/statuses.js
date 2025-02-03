@@ -35,7 +35,7 @@ export default (app) => {
     .get('/statuses/:id/edit', async (req, reply) => {
       app.authenticate(req, reply);
       const status = await app.objection.models.status.query().findById(req.params.id);
-      reply.render('statuses/edit', { data: status });
+      reply.render('statuses/edit', { status });
       return reply;
     })
     .patch('/statuses/:id', async (req, reply) => {
@@ -46,11 +46,17 @@ export default (app) => {
         await status.$query().patch({ name: req.body.data.name });
         req.flash('info', i18next.t('flash.statuses.patch.success'));
         reply.redirect(app.reverse('statuses'));
-      } catch (err) {
+      } catch (errors) {
         req.flash('error', i18next.t('flash.statuses.patch.error'));
-        reply.render('statuses/edit', { data: status, errors: err });
+        reply.render('statuses/edit', { status, errors: errors.data });
       }
 
       return reply;
     })
+    .delete('/statuses/:id', async (req, reply) => {
+      app.authenticate(req, reply);
+      await app.objection.models.status.query().deleteById(req.params.id);
+      req.flash('info', i18next.t('flash.statuses.delete.success'));
+      return reply.redirect('/statuses');
+    });
 };

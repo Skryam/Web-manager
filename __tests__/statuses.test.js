@@ -4,10 +4,9 @@ import _ from 'lodash';
 import fastify from 'fastify';
 
 import init from '../server/plugin.js';
-import encrypt from '../server/lib/secure.cjs';
-import { getTestData, prepareData } from './helpers/index.js';
+import { getTestData } from './helpers/index.js';
 
-describe('test users CRUD', () => {
+describe('test statuses CRUD', () => {
   let app;
   let knex;
   let models;
@@ -27,7 +26,6 @@ describe('test users CRUD', () => {
     // перед каждым тестом выполняем миграции
     // и заполняем БД тестовыми данными
     await knex.migrate.latest();
-    await prepareData(app);
   });
 
   beforeEach(async () => {
@@ -36,7 +34,7 @@ describe('test users CRUD', () => {
   it('index', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('users'),
+      url: app.reverse(''),
     });
 
     expect(response.statusCode).toBe(200);
@@ -90,6 +88,7 @@ describe('test users CRUD', () => {
     const [sessionCookie] = responseSignIn.cookies;
     const { name, value } = sessionCookie;
     const cookie = { [name]: value };
+    console.log(user);
 
     const responseEdit = await app.inject({
       method: 'GET',

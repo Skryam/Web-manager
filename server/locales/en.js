@@ -35,6 +35,9 @@ export default {
           success: 'Status successfully changed',
           error: 'Failed to change status',
         },
+        delete: {
+          success: 'Status deleted successfully',
+        },
       },
       authError: 'Access denied! Please login',
     },

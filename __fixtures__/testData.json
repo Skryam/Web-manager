@@ -12,5 +12,10 @@
       "email": "malika_75@live.com",
       "password": "!234Fcwf@153"
     }
+  },
+  "statuses": {
+    "new": {
+      "name": "superStatus"
+    }
   }
 }

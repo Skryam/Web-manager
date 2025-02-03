@@ -18,3 +18,23 @@ export const prepareData = async (app) => {
   // получаем данные из фикстур и заполняем БД
   await knex('users').insert(getFixtureData('users.json'));
 };
+
+export const logIn = async (app) => {
+  const params = getTestData().users.new;
+  const responseSignIn = await app.inject({
+    method: 'POST',
+    url: app.reverse('session'),
+    payload: {
+      data: params,
+    },
+  });
+
+  expect(responseSignIn.statusCode).toBe(302);
+  // после успешной аутентификации получаем куки из ответа,
+  // они понадобятся для выполнения запросов на маршруты требующие
+  // предварительную аутентификацию
+  const user = await app.models.user.query().findOne({ email: params.email });
+  const [sessionCookie] = responseSignIn.cookies;
+  const { name, value } = sessionCookie;
+  const cookie = { [name]: value };
+}

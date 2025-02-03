@@ -45,7 +45,7 @@ export default (app) => {
         reply.redirect(app.reverse('users'));
       } catch (err) {
         req.flash('error', i18next.t('flash.users.patch.error'));
-        reply.render('users/edit', { data: req.user, errors: err });
+        reply.render('users/edit', { data: req.user, errors: err.data });
       }
 
       return reply;
