@@ -13,7 +13,7 @@ export default (app) => {
     .get('/statuses/new', { name: 'newStatus' }, (req, reply) => {
       app.authenticate(req, reply);
       const status = new app.objection.models.status();
-      reply.render('statuses/new', { status });
+      return reply.render('statuses/new', { status });
     })
     .post('/statuses', async (req, reply) => {
       app.authenticate(req, reply);

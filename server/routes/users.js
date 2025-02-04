@@ -12,7 +12,7 @@ export default (app) => {
     })
     .get('/users/new', { name: 'newUser' }, (req, reply) => {
       const user = new app.objection.models.user();
-      reply.render('users/new', { user });
+      return reply.render('users/new', { user });
     })
     .post('/users', async (req, reply) => {
       const user = new app.objection.models.user();

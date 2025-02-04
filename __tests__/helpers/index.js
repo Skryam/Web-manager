@@ -19,8 +19,10 @@ export const prepareData = async (app) => {
   await knex('users').insert(getFixtureData('users.json'));
 };
 
-export const logIn = async (app) => {
-  const params = getTestData().users.new;
+export const getSession = async (app) => {
+  const params = getFixtureData('session.json');
+  await app.objection.knex('users').insert(params);
+
   const responseSignIn = await app.inject({
     method: 'POST',
     url: app.reverse('session'),
@@ -29,12 +31,12 @@ export const logIn = async (app) => {
     },
   });
 
-  expect(responseSignIn.statusCode).toBe(302);
+  expect(responseSignIn.statusCode).toBe(200);
   // после успешной аутентификации получаем куки из ответа,
   // они понадобятся для выполнения запросов на маршруты требующие
   // предварительную аутентификацию
-  const user = await app.models.user.query().findOne({ email: params.email });
   const [sessionCookie] = responseSignIn.cookies;
   const { name, value } = sessionCookie;
   const cookie = { [name]: value };
-}
+  return cookie;
+};
