@@ -1,0 +1,32 @@
+extends ../layouts/application.pug
+
+block content
+  h2.display-4.fw-bold.mt-4= 'TASKS'
+  a.btn.btn-primary(href="#")= 'createbtn'
+
+  table.table.table-borderless.table-striped.mt-5.bg-white
+    thead
+      tr
+        th= 'ID'
+        th= 'name'
+        th= 'status'
+        th= 'creatorId'
+        th= 'executorId'
+        th= 'created_at'
+        th= ''
+    tbody
+      each task in tasks
+        tr
+          td= task.id
+          td
+            a(href="#")= 'name'
+          td= task.status
+          td= task.creatorId
+          td= task.executorId
+          td= task.created_at
+          td
+            div.d-flex.flex-wrap
+              a.btn.btn-primary.me-1(href=`#`)= 'editbtn'
+              form(action= `#`, method="post")
+                input(name="_method" type="hidden" value='delete')
+                input.btn.btn-danger(type='submit', value='deletebtn')

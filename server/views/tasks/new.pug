@@ -1,0 +1,9 @@
+extends ../layouts/application.pug
+
+block content
+  h2.display-4.fw-bold.mt-4= 'TASK CREATION'
+  +formFor()(action=route('tasks') method='post')
+    +input(task, 'name', errors, t('views.tasks.new.name'))(type="text")
+    +input(task, 'description', errors, t('views.tasks.new.description'))(type="text")
+    +select(task, 'statusId', errors = {}, labelName = t('views.tasks.new.status'))
+    +submit(user)(value=t('views.users.new.submit'))
