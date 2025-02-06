@@ -30,7 +30,7 @@ mixin buttonTo(action, method)
     input(name="_method" type="hidden" value=method)
     input(type='submit')&attributes(attributes)
 
-mixin select(entity, propertyName, errors = {}, labelName = null)
+mixin select(entity, propertyName, errors = {}, labelName = null, selectName)
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)
@@ -45,7 +45,7 @@ mixin select(entity, propertyName, errors = {}, labelName = null)
     )&attributes(attributes)
       option
       each option in entity
-        option(value=option.id) #{option.name}
+        option(value=option.id)= option[selectName]
 
 mixin textarea(entity, propertyName, errors = {}, labelName = null)
   - propertyErrors = _.get(errors, propertyName)

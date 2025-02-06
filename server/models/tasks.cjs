@@ -5,7 +5,7 @@ const BaseModel = require('./BaseModel.cjs');
 const Status = require('./Status.cjs');
 const User = require('./User.cjs');
 
-const unique = objectionUnique({ fields: ['name', 'statusId', 'creatorId'] });
+const unique = objectionUnique({ fields: ['name'] });
 
 module.exports = class Task extends unique(BaseModel) {
   static get tableName() {
