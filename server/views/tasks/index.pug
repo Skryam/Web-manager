@@ -2,7 +2,7 @@ extends ../layouts/application.pug
 
 block content
   h2.display-4.fw-bold.mt-4= 'TASKS'
-  a.btn.btn-primary(href="#")= 'createbtn'
+  a.btn.btn-primary(href=route('newTask'))= 'createbtn'
 
   table.table.table-borderless.table-striped.mt-5.bg-white
     thead

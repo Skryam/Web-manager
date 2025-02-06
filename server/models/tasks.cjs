@@ -40,10 +40,10 @@ module.exports = class Task extends unique(BaseModel) {
       creator: {
         relation: BaseModel.BelongsToOneRelation,
         modelClass: User,
-      },
-      join: {
-        from: 'tasks.creatorId',
-        to: 'users.id',
+        join: {
+          from: 'tasks.creatorId',
+          to: 'users.id',
+        },
       },
     };
   }
