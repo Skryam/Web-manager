@@ -20,21 +20,23 @@ export default (app) => {
     })
     .post('/tasks', async (req, reply) => {
       app.authenticate(req, reply);
-      const task = new app.objection.models.task();
-      const creator = {creatorId: req.user.id};
-      task.$set(req.body.data);
-      task.$set(creator);
-      console.log('!!!!!!!!!!!!!!', task, req.user.id)
+
+      const taskData = {
+        ...req.body.data,
+        creator_id: req.user.id.toString(),
+      };
+      console.log('!!!!!!!!!!!!!!!!!', taskData)
 
       try {
-        const validTask = await app.objection.models.task.fromJson(req.body.data);
+        const validTask = await app.objection.models.task.fromJson(taskData);
+        console.log('33333333333333333333', validTask)
         await app.objection.models.task.query().insert(validTask);
         req.flash('info', 'norm');
         reply.redirect(app.reverse('tasks'));
       } catch (errors) {
-        console.log('################################', errors)
+        console.log('################################', errors);
         req.flash('error', 'upal');
-        reply.render('tasks/new', { task, errors });
+        reply.render('tasks/new', { task: req.body.data, errors });
       }
 
       return reply;
