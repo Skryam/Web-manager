@@ -23,7 +23,7 @@ export default (app) => {
 
       const taskData = {
         ...req.body.data,
-        creator_id: req.user.id.toString(),
+        creatorId: req.user.id.toString(),
       };
       console.log('!!!!!!!!!!!!!!!!!', taskData)
 
