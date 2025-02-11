@@ -7,7 +7,6 @@ export default (app) => {
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
       app.authenticate(req, reply);
       const tasks = await app.objection.models.task.query().withGraphFetched('[status, creator]');
-      console.log(tasks);
       reply.render('tasks/index', { tasks });
       return reply;
     })
@@ -24,7 +23,7 @@ export default (app) => {
 
       const taskData = {
         ...req.body.data,
-        creatorId: req.user.id.toString(),
+        creatorId: req.user.id,
       };
 
       try {

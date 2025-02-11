@@ -46,6 +46,8 @@ mixin select(entity, propertyName, errors = {}, labelName = null, selectName)
       option
       each option in entity
         option(value=option.id)= option[selectName]
+    if !_.isEmpty(propertyErrors)
+      .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
 mixin textarea(entity, propertyName, errors = {}, labelName = null)
   - propertyErrors = _.get(errors, propertyName)

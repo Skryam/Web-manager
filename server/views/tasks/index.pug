@@ -20,7 +20,10 @@ block content
           td= task.id
           td
             a(href="#")= task.name
-          td= task.status.name
+          if (task.status && task.status.name)
+            td= task.status.name
+          else
+            td= 'none'
           td= task.creatorId
           td= task.executorId
           td= formatDate(task.createdAt)
