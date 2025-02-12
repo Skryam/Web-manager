@@ -20,11 +20,16 @@ export default (app) => {
     })
     .post('/tasks', async (req, reply) => {
       app.authenticate(req, reply);
+      const { data } = req.body;
 
       const taskData = {
-        ...req.body.data,
+        ...data,
         creatorId: req.user.id,
+        statusId: parseInt(data.statusId, 10) || 0,
+        executorId: parseInt(data.executorId, 10) || null,
       };
+
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!', taskData);
 
       try {
         const validTask = await app.objection.models.task.fromJson(taskData);
@@ -32,7 +37,7 @@ export default (app) => {
         req.flash('info', 'norm');
         reply.redirect(app.reverse('tasks'));
       } catch (errors) {
-        console.log('####################', errors)
+        console.log('####################', errors);
         const task = new app.objection.models.task();
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();

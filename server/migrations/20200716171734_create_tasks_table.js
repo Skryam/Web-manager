@@ -6,7 +6,7 @@ export const up = (knex) => (
     table.string('name');
     table.string('description');
     table.integer('status_id');
-    table.integer('executor_id');
+    table.integer('executor_id').nullable();
     table.integer('creator_id');
     table.timestamp('created_at').defaultTo(knex.fn.now());
   })
