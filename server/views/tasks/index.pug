@@ -19,7 +19,7 @@ block content
         tr
           td= task.id
           td
-            a(href="#")= task.name
+            a(href=`/tasks/${task.id}`)= task.name
           if (task.status && task.status.name)
             td= task.status.name
           else
@@ -29,7 +29,7 @@ block content
           td= formatDate(task.createdAt)
           td
             div.d-flex.flex-wrap
-              a.btn.btn-primary.me-1(href=`#`)= 'editbtn'
-              form(action= `#`, method="post")
+              a.btn.btn-primary.me-1(href=`/tasks/${task.id}/edit`)= 'editbtn'
+              form(action= `/tasks/${task.id}`, method="post")
                 input(name="_method" type="hidden" value='delete')
                 input.btn.btn-danger(type='submit', value='deletebtn')

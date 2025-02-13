@@ -39,7 +39,7 @@ export default (app) => {
       return reply;
     })
     .patch('/statuses/:id', async (req, reply) => {
-      // app.authenticate(req, reply);
+      app.authenticate(req, reply);
       const status = await app.objection.models.status.query().findById(req.params.id);
 
       try {

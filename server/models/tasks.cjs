@@ -45,6 +45,14 @@ module.exports = class Task extends unique(BaseModel) {
           to: 'users.id',
         },
       },
+      executor: {
+        relation: BaseModel.BelongsToOneRelation,
+        modelClass: User,
+        join: {
+          from: 'tasks.executorId',
+          to: 'users.id',
+        },
+      },
     };
   }
 };

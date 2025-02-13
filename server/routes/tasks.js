@@ -29,22 +29,55 @@ export default (app) => {
         executorId: parseInt(data.executorId, 10) || null,
       };
 
-      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!', taskData);
-
       try {
         const validTask = await app.objection.models.task.fromJson(taskData);
         await app.objection.models.task.query().insert(validTask);
         req.flash('info', 'norm');
         reply.redirect(app.reverse('tasks'));
       } catch (errors) {
-        console.log('####################', errors);
+        console.log('####################', errors.data);
         const task = new app.objection.models.task();
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
+
         req.flash('error', 'upal');
         reply.render('tasks/new', {
           task, statuses, users, errors: errors.data,
         });
+      }
+
+      return reply;
+    })
+    .get('/tasks/:id', async (req, reply) => {
+      app.authenticate(req, reply);
+      const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor]');
+      console.log(task);
+      reply.render('tasks/view', { task });
+      return reply;
+    })
+    .get('/tasks/:id/edit', async (req, reply) => {
+      app.authenticate(req, reply);
+      const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor]');
+      const statuses = await app.objection.models.status.query();
+      const users = await app.objection.models.user.query();
+      console.log(task);
+      reply.render('tasks/edit', { task, statuses, users });
+      return reply;
+    })
+    .patch('/tasks/:id', async (req, reply) => {
+      app.authenticate(req, reply);
+      const { data } = req.body;
+      const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor]');
+      console.log('#################', task)
+      console.log('!!!!!!!!!!!!!!!!!!!!', data)
+
+      try {
+        await task.$query().patch(...data);
+        req.flash('info', 'nrom');
+        reply.redirect(app.reverse('tasks'));
+      } catch (errors) {
+        req.flash('error', 'upal');
+        reply.render('tasks/edit', { task, errors: errors.data });
       }
 
       return reply;

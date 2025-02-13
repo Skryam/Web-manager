@@ -5,6 +5,6 @@ block content
   +formFor()(action=route('tasks') method='post')
     +input(task, 'name', errors, 'name')(type="text")
     +textarea(task, 'description', errors = {}, 'description')(rows=3)
-    +select(statuses, 'statusId', errors = {}, 'status', 'name')
+    +select(statuses, 'statusId', test = {}, 'status', 'name')
     +select(users, 'executorId', errors = {}, 'executor', 'email')
     +submit(task)(value='submitBtn')
