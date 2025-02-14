@@ -55,7 +55,7 @@ export default (app) => {
     })
     .delete('/statuses/:id', async (req, reply) => {
       app.authenticate(req, reply);
-      await app.objection.models.status.query().deleteById(req.params.id);
+      const status = await app.objection.models.status.query().withGraphFetched('[task]');
       req.flash('info', i18next.t('flash.statuses.delete.success'));
       return reply.redirect('/statuses');
     });

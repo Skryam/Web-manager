@@ -7,6 +7,7 @@ export default (app) => {
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
       app.authenticate(req, reply);
       const tasks = await app.objection.models.task.query().withGraphFetched('[status, creator]');
+      console.log('taaasksksksk', tasks)
       reply.render('tasks/index', { tasks });
       return reply;
     })
@@ -67,19 +68,30 @@ export default (app) => {
     .patch('/tasks/:id', async (req, reply) => {
       app.authenticate(req, reply);
       const { data } = req.body;
+      data.statusId = parseInt(data.statusId, 10) || 0;
+      data.executorId = parseInt(data.executorId, 10) || null;
+
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor]');
-      console.log('#################', task)
-      console.log('!!!!!!!!!!!!!!!!!!!!', data)
 
       try {
-        await task.$query().patch(...data);
+        await task.$query().patch(data);
         req.flash('info', 'nrom');
         reply.redirect(app.reverse('tasks'));
       } catch (errors) {
+        const statuses = await app.objection.models.status.query();
+        const users = await app.objection.models.user.query();
         req.flash('error', 'upal');
-        reply.render('tasks/edit', { task, errors: errors.data });
+        reply.render('tasks/edit', {
+          task, statuses, users, errors: errors.data,
+        });
       }
 
       return reply;
+    })
+    .delete('/tasks/:id', async (req, reply) => {
+      app.authenticate(req, reply);
+      await app.objection.models.task.query().deleteById(req.params.id);
+      req.flash('info', 'norm');
+      return reply.redirect('/tasks');
     });
 };
