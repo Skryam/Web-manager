@@ -6,8 +6,9 @@ export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
       app.authenticate(req, reply);
-      const tasks = await app.objection.models.task.query().withGraphFetched('[status, creator]');
-      console.log('taaasksksksk', tasks)
+      console.log('PROOOOSHLOOOO')
+      const tasks = await app.objection.models.task.query().withGraphFetched('[status, creator, executor]');
+      console.log('taaaaaaaaask', tasks)
       reply.render('tasks/index', { tasks });
       return reply;
     })

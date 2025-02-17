@@ -52,9 +52,18 @@ export default (app) => {
     })
     .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
       app.authenticate(req, reply);
-      req.logOut();
-      await app.objection.models.user.query().deleteById(req.params.id);
-      req.flash('info', i18next.t('flash.users.delete.success'));
-      return reply.redirect('/users');
+      const { id } = req.params;
+      const checkTask = await app.objection.models.task.query().where({ executor_id: id })
+        .orWhere({ creator_id: id });
+      if (checkTask.length > 0) {
+        req.flash('error', 'est svyaz');
+        reply.redirect('/users');
+      } else {
+        req.logOut();
+        await app.objection.models.user.query().deleteById(id);
+        req.flash('info', i18next.t('flash.users.delete.success'));
+        reply.redirect('/users');
+      }
+      return reply;
     });
 };
