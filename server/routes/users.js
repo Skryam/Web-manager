@@ -58,6 +58,9 @@ export default (app) => {
       if (checkTask.length > 0) {
         req.flash('error', 'est svyaz');
         reply.redirect('/users');
+      } else if (parseInt(req.user.id, 10) !== parseInt(id, 10)) {
+        req.flash('error', 'ne sozdal');
+        reply.redirect('/users');
       } else {
         req.logOut();
         await app.objection.models.user.query().deleteById(id);

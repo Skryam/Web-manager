@@ -1,10 +1,10 @@
 extends ../layouts/application.pug
 
 block content
-  h2.display-4.fw-bold.mt-4= 'TASK CREATION'
+  h2.display-4.fw-bold.mt-4= t('views.tasks.new.title')
   +formFor()(action=route('tasks') method='post')
-    +input(task, 'name', errors, 'name')(type="text")
-    +textarea(task, 'description', errors = {}, 'description')(rows=3)
-    +select(statuses, 'statusId', test = {}, 'status', 'name')
-    +select(users, 'executorId', errors = {}, 'executor', 'email')
-    +submit(task)(value='submitBtn')
+    +input(task, 'name', errors, t('views.tasks.new.name'))(type="text")
+    +textarea(task, 'description', errors = {}, t('views.tasks.new.description'))(rows=3)
+    +select(statuses, 'statusId', test = {}, t('views.tasks.new.status'), 'name')
+    +select(users, 'executorId', errors = {}, t('views.tasks.new.executor'), 'email')
+    +submit(task)(value= t('views.tasks.new.submit'))

@@ -55,13 +55,13 @@ export default (app) => {
     })
     .delete('/statuses/:id', async (req, reply) => {
       app.authenticate(req, reply);
-      const status = await app.objection.models.status.query().findById(req.params.id);
-      const checkTask = await app.objection.models.task.query().where({ status_id: status.id });
+      const { id } = req.params;
+      const checkTask = await app.objection.models.task.query().where({ status_id: id });
       if (checkTask.length > 0) {
         req.flash('error', 'est svyaz');
         reply.redirect('/statuses');
       } else {
-        await status.$query().delete();
+        await app.objection.models.status.query().deleteById(id);
         req.flash('info', i18next.t('flash.statuses.delete.success'));
         reply.redirect('/statuses');
       }

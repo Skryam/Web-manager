@@ -53,7 +53,7 @@ export default (app) => {
     .get('/tasks/:id', async (req, reply) => {
       app.authenticate(req, reply);
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor]');
-      console.log(task);
+      console.log('viiiiiiiiiiiiiiiii', task);
       reply.render('tasks/view', { task });
       return reply;
     })
@@ -91,8 +91,16 @@ export default (app) => {
     })
     .delete('/tasks/:id', async (req, reply) => {
       app.authenticate(req, reply);
-      await app.objection.models.task.query().deleteById(req.params.id);
-      req.flash('info', 'norm');
-      return reply.redirect('/tasks');
+      const { id } = req.params;
+      const task = await app.objection.models.task.query().findById(id);
+      if (task.creatorId !== req.user.id) {
+        req.flash('error', 'ne sozdal');
+        reply.redirect('/tasks');
+      } else {
+        await task.$query().delete();
+        req.flash('info', 'norm');
+        reply.redirect('/tasks');
+      }
+      return reply;
     });
 };
