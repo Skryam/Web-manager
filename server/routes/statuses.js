@@ -58,7 +58,7 @@ export default (app) => {
       const { id } = req.params;
       const checkTask = await app.objection.models.task.query().where({ status_id: id });
       if (checkTask.length > 0) {
-        req.flash('error', 'est svyaz');
+        req.flash('error', i18next.t('flash.statuses.delete.error'));
         reply.redirect('/statuses');
       } else {
         await app.objection.models.status.query().deleteById(id);

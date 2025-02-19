@@ -37,6 +37,21 @@ export default {
         },
         delete: {
           success: 'Status deleted successfully',
+          error: 'Related to the task',
+        },
+      },
+      tasks: {
+        create: {
+          success: 'Task created successfully',
+          error: 'Failed to create task',
+        },
+        patch: {
+          success: 'Task successfully changed',
+          error: 'Failed to change task',
+        },
+        delete: {
+          success: 'Task deleted successfully',
+          error: 'You are not the author of task',
         },
       },
       authError: 'Access denied! Please login',
@@ -115,7 +130,7 @@ export default {
         creator: 'Author',
         executor: 'Executor',
         createdAt: 'Creation date',
-        edit: 'Edit',
+        editbtn: 'Edit',
         delete: 'Delete',
         new: {
           title: 'Task creation',
@@ -131,6 +146,14 @@ export default {
           date: 'Creation date',
           edit: 'Edit',
           delete: 'Delete',
+        },
+        edit: {
+          title: 'Task edit',
+          name: 'Name',
+          description: 'Description',
+          status: 'Status',
+          executor: 'Executor',
+          submit: 'Submit',
         },
       },
     },

@@ -20,5 +20,11 @@
     "patched": {
       "name": "patchedStatus"
     }
+  },
+  "tasks": {
+    "name": "testTask",
+    "description": "testDescription",
+    "statusId": 1,
+    "executorId": 1
   }
 }

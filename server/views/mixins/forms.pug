@@ -43,7 +43,7 @@ mixin select(entity, propertyName, errors = {}, labelName = null, selectName, cu
       name=getInputName(propertyName)
       class=classLine
     )&attributes(attributes)
-      option(value='') -- select option --
+      option(value='')
       each option in entity
         - isSelected = currentOption && parseInt(currentOption, 10) === parseInt(option.id, 10)
         option(value=option.id selected=isSelected)= option[selectName]
