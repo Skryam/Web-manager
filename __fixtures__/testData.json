@@ -24,7 +24,7 @@
   "tasks": {
     "name": "testTask",
     "description": "testDescription",
-    "statusId": 1,
-    "executorId": 1
+    "statusId": "1",
+    "executorId": "1"
   }
 }

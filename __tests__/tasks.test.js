@@ -39,7 +39,7 @@ describe('test statuses CRUD', () => {
       cookies: cookie,
     });
 
-    expect(response.statusCode).toBe(302);
+    expect(response.statusCode).toBe(200);
   });
 
   it('new', async () => {
@@ -49,7 +49,7 @@ describe('test statuses CRUD', () => {
       cookies: cookie,
     });
 
-    expect(response.statusCode).toBe(302);
+    expect(response.statusCode).toBe(200);
   });
 
   it('create', async () => {
@@ -62,7 +62,6 @@ describe('test statuses CRUD', () => {
       },
       cookies: cookie,
     });
-    console.log(response)
 
     expect(response.statusCode).toBe(302);
     const expected = {
@@ -75,8 +74,8 @@ describe('test statuses CRUD', () => {
     expect(task).toMatchObject(expected);
   });
 
-  /* it('patch / delete', async () => {
-    const status = await models.status.query().findOne({ name: testData.statuses.new.name });
+  it('patch / delete', async () => {
+    const task = await models.task.query().findOne({ name: testData.tasks.name });
     const paramsPatched = testData.statuses.patched;
 
     const responseEdit = await app.inject({
@@ -113,7 +112,7 @@ describe('test statuses CRUD', () => {
 
     expect(responseDelete.statusCode).toBe(302);
     expect(await models.status.query().findOne({ id: status.id })).toBeUndefined();
-  }); */
+  });
 
   afterEach(async () => {
     // Пока Segmentation fault: 11

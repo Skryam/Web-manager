@@ -21,6 +21,8 @@ export default (app) => {
     .post('/tasks', async (req, reply) => {
       app.authenticate(req, reply);
       const { data } = req.body;
+      console.log(req)
+      console.log('daaaaaaaaaaaaaaataaaaaaaa', data)
 
       const taskData = {
         ...data,
