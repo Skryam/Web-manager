@@ -54,6 +54,20 @@ export default {
           error: 'You are not the author of task',
         },
       },
+      labels: {
+        create: {
+          success: 'Label created successfully',
+          error: 'Failed to create label',
+        },
+        patch: {
+          success: 'Label successfully changed',
+          error: 'Failed to change label',
+        },
+        delete: {
+          success: 'Label deleted successfully',
+          error: 'Related to the task',
+        },
+      },
       authError: 'Access denied! Please login',
     },
     layouts: {
@@ -65,6 +79,7 @@ export default {
         signOut: 'Logout',
         statuses: 'Statuses',
         tasks: 'Tasks',
+        labels: 'Labels',
       },
     },
     views: {
@@ -154,6 +169,23 @@ export default {
           status: 'Status',
           executor: 'Executor',
           submit: 'Submit',
+        },
+      },
+      labels: {
+        title: 'Labels',
+        create: 'Create label',
+        name: 'Name',
+        creationDate: 'Creation date',
+        editbtn: 'Change',
+        delete: 'Delete',
+        new: {
+          create: 'Label creation',
+          name: 'Name',
+          createButton: 'Create',
+        },
+        edit: {
+          change: 'Label change',
+          changeButton: 'Change',
         },
       },
     },

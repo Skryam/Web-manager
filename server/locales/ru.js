@@ -28,7 +28,7 @@ export default {
       },
       statuses: {
         create: {
-          success: 'Статус успешно изменён',
+          success: 'Статус успешно создан',
           error: 'Не удалось создать статус',
         },
         patch: {
@@ -54,6 +54,20 @@ export default {
           error: 'Вы не автор задачи',
         },
       },
+      labels: {
+        create: {
+          success: 'Метка успешно создана',
+          error: 'Не удалось создать метку',
+        },
+        patch: {
+          success: 'Метка успешно изменена',
+          error: 'Не удалось изменить метку',
+        },
+        delete: {
+          success: 'Метка успешно удалена',
+          error: 'Связана с задачей',
+        },
+      },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
     },
     layouts: {
@@ -65,6 +79,7 @@ export default {
         signOut: 'Выход',
         statuses: 'Статусы',
         tasks: 'Задачи',
+        labels: 'Метки',
       },
     },
     views: {
@@ -154,6 +169,23 @@ export default {
           status: 'Статус',
           executor: 'Исполнитель',
           submit: 'Сохранить',
+        },
+      },
+      labels: {
+        status: 'Метки',
+        create: 'Создать метку',
+        name: 'Наименование',
+        creationDate: 'Дата создания',
+        editbtn: 'Изменить',
+        delete: 'Удалить',
+        new: {
+          create: 'Создание метки',
+          name: 'Наименование',
+          createButton: 'Создать',
+        },
+        edit: {
+          change: 'Изменение метки',
+          changeButton: 'Изменить',
         },
       },
     },

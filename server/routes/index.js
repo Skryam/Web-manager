@@ -6,6 +6,7 @@ import session from './session.js';
 import changeLang from './changeLang.js';
 import statuses from './statuses.js';
 import tasks from './tasks.js';
+import labels from './labels.js';
 
 const controllers = [
   welcome,
@@ -14,6 +15,7 @@ const controllers = [
   changeLang,
   statuses,
   tasks,
+  labels,
 ];
 
 export default (app) => controllers.forEach((f) => f(app));
