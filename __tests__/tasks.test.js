@@ -53,7 +53,7 @@ describe('test statuses CRUD', () => {
   });
 
   it('create', async () => {
-    const params = testData.tasks;
+    const params = testData.tasks.new;
     const response = await app.inject({
       method: 'POST',
       url: app.reverse('tasks'),
@@ -75,21 +75,21 @@ describe('test statuses CRUD', () => {
   });
 
   it('patch / delete', async () => {
-    const task = await models.task.query().findOne({ name: testData.tasks.name });
-    const paramsPatched = testData.statuses.patched;
+    const task = await models.task.query().findOne({ name: testData.tasks.new.name });
+    const paramsPatched = testData.tasks.patched;
 
     const responseEdit = await app.inject({
       method: 'GET',
-      url: `/statuses/${status.id}/edit`,
+      url: `/tasks/${task.id}/edit`,
       // используем полученные ранее куки
       cookies: cookie,
     });
 
-    expect(responseEdit.statusCode).toBe(302);
+    expect(responseEdit.statusCode).toBe(200);
 
     const responsePatch = await app.inject({
       method: 'PATCH',
-      url: `/statuses/${status.id}`,
+      url: `/tasks/${task.id}`,
       payload: {
         data: paramsPatched,
       },
@@ -100,18 +100,22 @@ describe('test statuses CRUD', () => {
 
     const expected = {
       name: paramsPatched.name,
+      description: paramsPatched.description,
+      statusId: 1,
+      executorId: null,
     };
-    const patchedStatus = await models.status.query().findOne({ id: status.id });
+
+    const patchedStatus = await models.task.query().findOne({ id: task.id });
     expect(patchedStatus).toMatchObject(expected);
 
     const responseDelete = await app.inject({
       method: 'DELETE',
-      url: `/statuses/${status.id}`,
+      url: `/tasks/${task.id}`,
       cookies: cookie,
     });
 
     expect(responseDelete.statusCode).toBe(302);
-    expect(await models.status.query().findOne({ id: status.id })).toBeUndefined();
+    expect(await models.task.query().findOne({ id: task.id })).toBeUndefined();
   });
 
   afterEach(async () => {

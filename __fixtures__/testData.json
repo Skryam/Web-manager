@@ -22,9 +22,17 @@
     }
   },
   "tasks": {
-    "name": "testTask",
-    "description": "testDescription",
-    "statusId": "1",
-    "executorId": "1"
+    "new": {
+      "name": "testTask",
+      "description": "testDescription",
+      "statusId": "1",
+      "executorId": "1"
+    },
+    "patched": {
+      "name": "patchedTask",
+      "description": "",
+      "statusId": "1",
+      "executorId": ""
+    }
   }
 }
