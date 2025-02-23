@@ -7,4 +7,5 @@ block content
     +textarea(task, 'description', errors = {}, t('views.tasks.new.description'))(rows=3)
     +select(statuses, 'statusId', test = {}, t('views.tasks.new.status'), 'name')
     +select(users, 'executorId', errors = {}, t('views.tasks.new.executor'), 'email')
+    +select(labels, 'labels', errors = {}, t('views.tasks.new.labels'), 'name')(multiple="multiple")
     +submit(task)(value= t('views.tasks.new.submit'))

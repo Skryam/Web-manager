@@ -36,38 +36,36 @@ export default (app) => {
     .get('/labels/:id/edit', async (req, reply) => {
       app.authenticate(req, reply);
       const label = await app.objection.models.label.query().findById(req.params.id);
-      reply.render('statuses/edit', { label });
+      reply.render('labels/edit', { label });
       return reply;
     })
-    /*
-    .patch('/statuses/:id', async (req, reply) => {
+    .patch('/labels/:id', async (req, reply) => {
       app.authenticate(req, reply);
-      const status = await app.objection.models.status.query().findById(req.params.id);
+      const label = await app.objection.models.label.query().findById(req.params.id);
 
       try {
-        await status.$query().patch({ name: req.body.data.name });
-        req.flash('info', i18next.t('flash.statuses.patch.success'));
-        reply.redirect(app.reverse('statuses'));
+        await label.$query().patch({ name: req.body.data.name });
+        req.flash('info', i18next.t('flash.labels.patch.success'));
+        reply.redirect(app.reverse('labels'));
       } catch (errors) {
-        req.flash('error', i18next.t('flash.statuses.patch.error'));
-        reply.render('statuses/edit', { status, errors: errors.data });
+        req.flash('error', i18next.t('flash.labels.patch.error'));
+        reply.render('labels/edit', { label, errors: errors.data });
       }
 
       return reply;
     })
-    .delete('/statuses/:id', async (req, reply) => {
+    .delete('/labels/:id', async (req, reply) => {
       app.authenticate(req, reply);
       const { id } = req.params;
-      const checkTask = await app.objection.models.task.query().where({ status_id: id });
+      const checkTask = await app.objection.models.task.query().where({ label_id: id });
       if (checkTask.length > 0) {
-        req.flash('error', i18next.t('flash.statuses.delete.error'));
-        reply.redirect('/statuses');
+        req.flash('error', i18next.t('flash.labels.delete.error'));
+        reply.redirect('/labels');
       } else {
-        await app.objection.models.status.query().deleteById(id);
-        req.flash('info', i18next.t('flash.statuses.delete.success'));
-        reply.redirect('/statuses');
+        await app.objection.models.label.query().deleteById(id);
+        req.flash('info', i18next.t('flash.labels.delete.success'));
+        reply.redirect('/labels');
       }
       return reply;
     });
-    */
 };

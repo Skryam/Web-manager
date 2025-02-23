@@ -7,5 +7,6 @@ block content
     +textarea(task, 'description', errors = {}, t('views.tasks.edit.description'))(rows=3)
     +select(statuses, 'statusId', errors = {}, t('views.tasks.edit.status'), 'name', task.statusId)
     +select(users, 'executorId', errors = {}, t('views.tasks.edit.executor'), 'email', task.executorId)
+    +select(labels, 'labels', errors = {}, t('views.tasks.edit.labels'), 'name')(multiple="multiple")
     input(name="_method" type="hidden" value='patch')
     +submit(task)(value= t('views.tasks.edit.submit'))

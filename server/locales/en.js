@@ -153,6 +153,7 @@ export default {
           description: 'Description',
           status: 'Status',
           executor: 'Executor',
+          labels: 'Labels',
           submit: 'Submit',
         },
         view: {
@@ -168,6 +169,7 @@ export default {
           description: 'Description',
           status: 'Status',
           executor: 'Executor',
+          labels: 'Labels',
           submit: 'Submit',
         },
       },

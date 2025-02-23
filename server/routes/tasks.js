@@ -15,14 +15,15 @@ export default (app) => {
       const task = new app.objection.models.task();
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
-      reply.render('tasks/new', { task, statuses, users });
+      const labels = await app.objection.models.label.query();
+      reply.render('tasks/new', {
+        task, statuses, users, labels,
+      });
       return reply;
     })
     .post('/tasks', async (req, reply) => {
       app.authenticate(req, reply);
       const { data } = req.body;
-      console.log(req)
-      console.log('daaaaaaaaaaaaaaataaaaaaaa', data)
 
       const taskData = {
         ...data,
@@ -51,21 +52,26 @@ export default (app) => {
     })
     .get('/tasks/:id', async (req, reply) => {
       app.authenticate(req, reply);
-      const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor]');
+      const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
+      console.log('taaaaaaaaaaask', task)
       reply.render('tasks/view', { task });
       return reply;
     })
     .get('/tasks/:id/edit', async (req, reply) => {
       app.authenticate(req, reply);
-      const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor]');
+      const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
-      reply.render('tasks/edit', { task, statuses, users });
+      const labels = await app.objection.models.label.query();
+      reply.render('tasks/edit', {
+        task, statuses, users, labels,
+      });
       return reply;
     })
     .patch('/tasks/:id', async (req, reply) => {
       app.authenticate(req, reply);
       const { data } = req.body;
+      console.log('paaaaaaaaaaatch', data)
       data.statusId = parseInt(data.statusId, 10) || 0;
       data.executorId = parseInt(data.executorId, 10) || null;
 
