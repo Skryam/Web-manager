@@ -3,8 +3,9 @@
 export const up = (knex) => (
   knex.schema.createTable('tasks_labels', (table) => {
     table.increments('id').primary();
-    table.integer('task_id');
-    table.integer('label_id');
+    table.integer('task_id').notNullable();
+    table.integer('label_id').notNullable();
+    table.unique(['task_id', 'label_id']);
   })
 );
 
