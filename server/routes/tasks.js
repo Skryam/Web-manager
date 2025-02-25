@@ -67,6 +67,7 @@ export default (app) => {
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
       const labels = await app.objection.models.label.query();
+      console.log('############', typeof task.labels);
       reply.render('tasks/edit', {
         task, statuses, users, labels,
       });
@@ -83,13 +84,14 @@ export default (app) => {
 
       try {
         await task.$query().patch(data);
-        if (data.labels.length > 0) {
+        if (data.labels.length && data.labels.length > 0) {
+          await task.$relatedQuery('labels').unrelate();
           await task.$relatedQuery('labels').relate(data.labels);
         }
         req.flash('info', i18next.t('flash.tasks.patch.success'));
         reply.redirect(app.reverse('tasks'));
       } catch (errors) {
-        console.log(errors)
+        console.log(errors);
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
