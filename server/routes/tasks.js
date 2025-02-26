@@ -67,9 +67,10 @@ export default (app) => {
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
       const labels = await app.objection.models.label.query();
-      console.log('############', typeof task.labels);
+      const selectedLabels = Array.isArray([...task.labels]) ? [...task.labels] : [];
+      console.log('############', selectedLabels);
       reply.render('tasks/edit', {
-        task, statuses, users, labels,
+        task, statuses, users, labels, selectedLabels,
       });
       return reply;
     })
@@ -86,7 +87,10 @@ export default (app) => {
         await task.$query().patch(data);
         if (data.labels.length && data.labels.length > 0) {
           await task.$relatedQuery('labels').unrelate();
-          await task.$relatedQuery('labels').relate(data.labels);
+
+          [...data.labels].forEach(async (label) => {
+            await task.$relatedQuery('labels').relate(label);
+          });
         }
         req.flash('info', i18next.t('flash.tasks.patch.success'));
         reply.redirect(app.reverse('tasks'));
