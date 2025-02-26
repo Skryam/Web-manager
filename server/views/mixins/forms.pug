@@ -30,7 +30,8 @@ mixin buttonTo(action, method)
     input(name="_method" type="hidden" value=method)
     input(type='submit')&attributes(attributes)
 
-mixin select(entity, propertyName, errors = {}, labelName = null, selectName, currentOption = [])
+mixin select(entity, propertyName, errors = {}, labelName = null, selectName, currentOption)
+  - optArr = currentOption ? Array.from(currentOption) : []
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)
@@ -45,7 +46,7 @@ mixin select(entity, propertyName, errors = {}, labelName = null, selectName, cu
     )&attributes(attributes)
       option(value='')
       each option in entity
-        - isSelected = Array.isArray(currentOption) && currentOption.some(elem => parseInt(elem.id, 10) === parseInt(option.id, 10))
+        - isSelected = optArr.some(elem => parseInt(elem, 10) === parseInt(option.id, 10))
         option(value=option.id selected=isSelected)= option[selectName]
     if !_.isEmpty(propertyErrors)
       div= propertyErrors.map(({ message }) => message).join('. ')
