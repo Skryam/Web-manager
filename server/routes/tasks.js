@@ -23,6 +23,7 @@ export default (app) => {
     })
     .post('/tasks', async (req, reply) => {
       app.authenticate(req, reply);
+      console.log('begin')
       const { data } = req.body;
 
       const taskData = {
@@ -33,6 +34,7 @@ export default (app) => {
       };
 
       try {
+        console.log('try')
         const validTask = await app.objection.models.task.fromJson(taskData);
         await app.objection.models.task.query().insert(validTask);
         console.log('iiiiiiiiid', validTask.$id());
@@ -42,6 +44,7 @@ export default (app) => {
         req.flash('info', i18next.t('flash.tasks.create.success'));
         reply.redirect(app.reverse('tasks'));
       } catch (errors) {
+        console.log('error')
         const task = new app.objection.models.task();
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();

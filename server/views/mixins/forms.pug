@@ -31,6 +31,7 @@ mixin buttonTo(action, method)
     input(type='submit')&attributes(attributes)
 
 mixin select(entity, propertyName, errors = {}, labelName = null, selectName, currentOption)
+  - console.log('!!!!!!!!!!!!!!', entity)
   - optArr = currentOption ? Array.from(currentOption) : []
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
