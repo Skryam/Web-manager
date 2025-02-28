@@ -44,14 +44,15 @@ export default (app) => {
         req.flash('info', i18next.t('flash.tasks.create.success'));
         reply.redirect(app.reverse('tasks'));
       } catch (errors) {
-        console.log('error')
+        console.log('error', errors)
         const task = new app.objection.models.task();
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
+        const labels = await app.objection.models.label.query();
 
         req.flash('error', i18next.t('flash.tasks.create.error'));
         reply.render('tasks/new', {
-          task, statuses, users, errors: errors.data,
+          task, statuses, users, labels, errors: errors.data,
         });
       }
 
@@ -116,6 +117,7 @@ export default (app) => {
         req.flash('error', i18next.t('flash.tasks.delete.error'));
         reply.redirect('/tasks');
       } else {
+        await task.$relatedQuery('labels').unrelate();
         await task.$query().delete();
         req.flash('info', i18next.t('flash.tasks.delete.success'));
         reply.redirect('/tasks');
