@@ -57,9 +57,11 @@ export default (app) => {
     .delete('/labels/:id', async (req, reply) => {
       app.authenticate(req, reply);
       const { id } = req.params;
-      const checkTask = await app.objection.models.task.query().findById(id).withGraphFetched('[labels]');
-      console.log('!!!!!!!!!!!', checkTask)
-      if (checkTask) {
+      const checkTask = await app.objection.models.tasksLabels.query().where('labelId', id)
+
+      console.log('!!!!!!!!!!!', checkTask);
+
+      if (checkTask.length > 0) {
         req.flash('error', i18next.t('flash.labels.delete.error'));
         reply.redirect('/labels');
       } else {
