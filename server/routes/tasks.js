@@ -23,7 +23,7 @@ export default (app) => {
     })
     .post('/tasks', async (req, reply) => {
       app.authenticate(req, reply);
-      console.log('begin')
+      console.log('begin');
       const { data } = req.body;
 
       const taskData = {
@@ -34,17 +34,26 @@ export default (app) => {
       };
 
       try {
-        console.log('try')
-        const validTask = await app.objection.models.task.fromJson(taskData);
-        await app.objection.models.task.query().insert(validTask);
-        console.log('iiiiiiiiid', validTask.$id());
-        await app.objection.models.tasksLabels.query()
-          .insert({ taskId: validTask.$id(), labelId: data.labels });
+        await app.objection.models.task.transaction(async (trx) => {
+          console.log('try');
+          console.log(data)
+          const validTask = await app.objection.models.task.fromJson(taskData);
+
+          const insertTask = await app.objection.models.task.query(trx).insertAndFetch(validTask);
+          console.log('iiiiiiiiid', validTask.$id());
+
+          if (data.labels) {
+            await Promise.all(
+              [...data.labels].map((label) => insertTask.$relatedQuery('labels', trx).relate(label)),
+            );
+          }
+          return insertTask;
+        });
 
         req.flash('info', i18next.t('flash.tasks.create.success'));
         reply.redirect(app.reverse('tasks'));
       } catch (errors) {
-        console.log('error', errors)
+        console.log('error', errors);
         const task = new app.objection.models.task();
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
@@ -61,7 +70,6 @@ export default (app) => {
     .get('/tasks/:id', async (req, reply) => {
       app.authenticate(req, reply);
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
-      console.log('taaaaaaaaaaask', task);
       reply.render('tasks/view', { task });
       return reply;
     })
