@@ -26,13 +26,22 @@
       "name": "testTask",
       "description": "testDescription",
       "statusId": "1",
-      "executorId": "1"
+      "executorId": "1",
+      "labels": [1, 2]
     },
     "patched": {
       "name": "patchedTask",
       "description": "",
       "statusId": "1",
       "executorId": ""
+    }
+  },
+  "labels": {
+    "new": {
+      "name": "superLabel"
+    },
+    "patched": {
+      "name": "patchedLabel"
     }
   }
 }

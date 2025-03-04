@@ -18,6 +18,7 @@ export const prepareData = async (app) => {
   // получаем данные из фикстур и заполняем БД
   await knex('users').insert(getFixtureData('users.json'));
   await knex('statuses').insert(getFixtureData('status.json'));
+  await knex('labels').insert(getFixtureData('labels.json'));
 };
 
 export const getSession = async (app) => {
