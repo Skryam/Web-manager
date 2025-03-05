@@ -31,7 +31,6 @@ mixin buttonTo(action, method)
     input(type='submit')&attributes(attributes)
 
 mixin select(entity, propertyName, errors = {}, labelName = null, selectName, currentOption)
-  - console.log('!!!!!!!!!!!!!!', entity)
   - optArr = currentOption ? Array.from(currentOption) : []
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
@@ -67,3 +66,24 @@ mixin textarea(entity, propertyName, errors = {}, labelName = null)
     )&attributes(attributes)= value=_.get(entity, propertyName, '')
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
+
+mixin filterSelect(entity, propertyName, errors = {}, labelName = null, selectName, currentOption)
+  - optArr = currentOption ? Array.from(currentOption) : []
+  - propertyErrors = _.get(errors, propertyName)
+  - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
+  - inputId = getInputId(propertyName)
+  .input-group.mb-3(class=(errors[propertyName] && 'has-danger'))
+    label.input-group-text(
+      for= inputId
+    )= labelName
+    select(
+      id= inputId
+      name=getInputName(propertyName)
+      class=classLine
+    )&attributes(attributes)
+      option(value='')
+      each option in entity
+        - isSelected = optArr.some(elem => parseInt(elem, 10) === parseInt(option.id, 10))
+        option(value=option.id selected=isSelected)= option[selectName]
+    if !_.isEmpty(propertyErrors)
+      div= propertyErrors.map(({ message }) => message).join('. ')

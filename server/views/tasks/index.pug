@@ -4,6 +4,23 @@ block content
   h2.display-4.fw-bold.mt-4= t('views.tasks.title')
   a.btn.btn-primary(href=route('newTask'))= t('views.tasks.create')
 
+  .card-shadow-sm
+    .card-body.p-4
+      +formFor()(action=route('tasks') method='get')
+        .row
+          .col-12.col-md
+            .input-group.mb-3
+              +filterSelect(statuses, 'statusId', errors = {}, t('views.tasks.edit.status'), 'name')
+          .col-12.col-md
+            .input-group.mb-3
+              +filterSelect(users, 'executorId', errors = {}, t('views.tasks.edit.executor'), 'name')
+          .col-12.col-md
+            .input-group.mb-3
+              +filterSelect(labels, 'labels', errors = {}, t('views.tasks.edit.labels'), 'name')
+
+
+        +submit()(value= 'submitBtn')
+
   table.table.table-borderless.table-striped.mt-5.bg-white
     thead
       tr

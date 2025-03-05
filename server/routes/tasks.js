@@ -7,7 +7,12 @@ export default (app) => {
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
       app.authenticate(req, reply);
       const tasks = await app.objection.models.task.query().withGraphFetched('[status, creator, executor]');
-      reply.render('tasks/index', { tasks });
+      const statuses = await app.objection.models.status.query();
+      const users = await app.objection.models.user.query();
+      const labels = await app.objection.models.label.query();
+      reply.render('tasks/index', {
+        tasks, statuses, users, labels,
+      });
       return reply;
     })
     .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
@@ -36,7 +41,7 @@ export default (app) => {
       try {
         await app.objection.models.task.transaction(async (trx) => {
           console.log('try');
-          console.log(data)
+          console.log(data);
           const validTask = await app.objection.models.task.fromJson(taskData);
 
           const insertTask = await app.objection.models.task.query(trx).insertAndFetch(validTask);
