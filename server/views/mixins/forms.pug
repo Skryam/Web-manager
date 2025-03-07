@@ -78,6 +78,7 @@ mixin filterSelect(entity, propertyName, errors = {}, labelName = null, selectNa
     )= labelName
     select(
       id= inputId
+      name=propertyName
       class=classLine
     )&attributes(attributes)
       option(value='')

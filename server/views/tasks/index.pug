@@ -9,11 +9,11 @@ block content
       +formFor()(action=route('tasks') method='get')
         .row
           .col-12.col-md
-            +filterSelect(statuses, 'statusId', errors = {}, t('views.tasks.edit.status'), 'name')(name= 'status')
+            +filterSelect(statuses, 'statusId', errors = {}, t('views.tasks.edit.status'), 'name')
           .col-12.col-md
-            +filterSelect(users, 'executorId', errors = {}, t('views.tasks.edit.executor'), 'email')(name= 'executor')
+            +filterSelect(users, 'executorId', errors = {}, t('views.tasks.edit.executor'), 'email')
           .col-12.col-md
-            +filterSelect(labels, 'labels', errors = {}, t('views.tasks.edit.labels'), 'name')(name= 'label')
+            +filterSelect(labels, 'labels', errors = {}, t('views.tasks.edit.labels'), 'name')
 
         +submit(tasks)(value= 'submitBtn')
 

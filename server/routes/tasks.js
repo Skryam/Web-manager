@@ -6,11 +6,17 @@ export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
       app.authenticate(req, reply);
-      const tasks = await app.objection.models.task.query().withGraphFetched('[status, creator, executor]');
+      const filter = { ...req.query };
+      console.log('^^^^^^^^', filter);
+
+      const tasks = await app.objection.models.task.query().withGraphFetched('[status, creator, executor, labels]').skipUndefined()
+        .where('statusId', filter.statusId)
+
+      console.log('@@@@@@@@@', tasks);
+
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
       const labels = await app.objection.models.label.query();
-      console.log('^^^^^^^^^^^^^^^^^^^^', { ...req.query });
       reply.render('tasks/index', {
         tasks, statuses, users, labels,
       });
@@ -50,7 +56,7 @@ export default (app) => {
 
           if (data.labels) {
             await Promise.all(
-              [...data.labels].map((label) => insertTask.$relatedQuery('labels', trx).relate(label)),
+              [...data.labels].flatMap((label) => insertTask.$relatedQuery('labels', trx).relate(label)),
             );
           }
           return insertTask;
