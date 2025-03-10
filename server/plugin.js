@@ -33,8 +33,6 @@ const rollbar = new Rollbar({
   captureUnhandledRejections: true,
 });
 
-rollbar.log('Hello world!');
-
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
 const mode = process.env.NODE_ENV || 'development';
@@ -88,6 +86,13 @@ const addHooks = (app) => {
   });
 };
 
+const addRollbarHandler = (app) => {
+  app.setErrorHandler((error, request, reply) => {
+    rollbar.error(error, request);
+    reply.status(500).send({ error: 'Internal Server Error' });
+  });
+};
+
 const registerPlugins = async (app) => {
   await app.register(fastifySensible);
   // await app.register(fastifyErrorPage);
@@ -137,6 +142,7 @@ export default async (app, _options) => {
   setUpStaticAssets(app);
   addRoutes(app);
   addHooks(app);
+  addRollbarHandler(app);
 
   return app;
 };
