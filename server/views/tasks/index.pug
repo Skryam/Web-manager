@@ -2,18 +2,30 @@ extends ../layouts/application.pug
 
 block content
   h2.display-4.fw-bold.mt-4= t('views.tasks.title')
-  a.btn.btn-primary(href=route('newTask'))= t('views.tasks.create')
+  a.btn.btn-primary.mb-5(href=route('newTask'))= t('views.tasks.create')
 
   .card.shadow-sm
     .card-body.p-4
       +formFor()(action=route('tasks') method='get')
         .row
           .col-12.col-md
-            +filterSelect(statuses, 'statusId', errors = {}, t('views.tasks.edit.status'), 'name')
+            +filterSelect(statuses, 'status', errors = {}, t('views.tasks.edit.status'), 'name', filter.statusId)
           .col-12.col-md
-            +filterSelect(users, 'executorId', errors = {}, t('views.tasks.edit.executor'), 'email')
+            +filterSelect(users, 'executor', errors = {}, t('views.tasks.edit.executor'), 'email', filter.executorId)
           .col-12.col-md
-            +filterSelect(labels, 'labels', errors = {}, t('views.tasks.edit.labels'), 'name')
+            +filterSelect(labels, 'label', errors = {}, t('views.tasks.edit.labels'), 'name', filter.label)
+        .mb-3.form-check
+          input(
+            id= 'data_isCreatorUser'
+            class='form-check-input'
+            type='checkbox'
+            name='isCreatorUser'
+            checked= filter.isCreatorUser
+          )
+          label(
+            class='form-check-label'
+            for='data_isCreatorUser'
+          )= 'My tasks'
 
         +submit(tasks)(value= 'submitBtn')
 
@@ -29,16 +41,14 @@ block content
         th= ''
     tbody
       each task in tasks
+        - const getName = (name) => task.name ? task.name : ''
         tr
           td= task.id
           td
             a(href=`/tasks/${task.id}`)= task.name
-          if (task.status && task.status.name)
-            td= task.status.name
-          else
-            td= 'none'
-          td= task.creatorId
-          td= task.executorId
+          td= task.status.name
+          td= task.creator.email
+          td= task.executor ? task.executor.email : ''
           td= formatDate(task.createdAt)
           td
             div.d-flex.flex-wrap

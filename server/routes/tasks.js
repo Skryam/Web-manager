@@ -9,16 +9,33 @@ export default (app) => {
       const filter = { ...req.query };
       console.log('^^^^^^^^', filter);
 
-      const tasks = await app.objection.models.task.query().withGraphFetched('[status, creator, executor, labels]').skipUndefined()
-        .where('statusId', filter.statusId)
-
+      const tasks = await app.objection.models.task.query()
+        .modify((builder) => {
+          if (filter.status) {
+            builder.where('statusId', filter.status);
+          }
+          if (filter.executor) {
+            builder.where('executorId', filter.executor);
+          }
+          if (filter.label) {
+            builder.whereExists(
+              app.objection.models.task.relatedQuery('labels')
+                .where('labels.id', filter.label),
+            );
+          }
+          if (filter.isCreatorUser) {
+            console.log(req.user.id);
+            builder.where('creatorId', req.user.id);
+          }
+        })
+        .withGraphFetched('[status, creator, executor, labels]');
       console.log('@@@@@@@@@', tasks);
 
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
       const labels = await app.objection.models.label.query();
       reply.render('tasks/index', {
-        tasks, statuses, users, labels,
+        tasks, statuses, users, labels, filter,
       });
       return reply;
     })
