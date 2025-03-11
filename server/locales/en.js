@@ -147,6 +147,8 @@ export default {
         createdAt: 'Creation date',
         editbtn: 'Edit',
         delete: 'Delete',
+        userTasksFilter: 'My tasks',
+        show: 'Filter',
         new: {
           title: 'Task creation',
           name: 'Name',
@@ -169,7 +171,7 @@ export default {
           description: 'Description',
           status: 'Status',
           executor: 'Executor',
-          labels: 'Labels',
+          labels: 'Label',
           submit: 'Submit',
         },
       },

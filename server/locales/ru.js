@@ -147,6 +147,8 @@ export default {
         createdAt: 'Дата создания',
         editbtn: 'Редактировать',
         delete: 'Удалить',
+        userTasksFilter: 'Мои задачи',
+        show: 'Показать',
         new: {
           title: 'Создание задачи',
           name: 'Название',
@@ -169,10 +171,11 @@ export default {
           status: 'Статус',
           executor: 'Исполнитель',
           submit: 'Сохранить',
+          labels: 'Метка',
         },
       },
       labels: {
-        status: 'Метки',
+        title: 'Метки',
         create: 'Создать метку',
         name: 'Наименование',
         creationDate: 'Дата создания',

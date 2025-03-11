@@ -1,9 +1,6 @@
 extends ../layouts/application.pug
 
 block content
-  if isAuthenticated()
-    p= currentUser.id
-
   table.table.table-striped
     thead
       tr

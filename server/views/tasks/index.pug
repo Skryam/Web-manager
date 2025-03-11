@@ -25,9 +25,9 @@ block content
           label(
             class='form-check-label'
             for='data_isCreatorUser'
-          )= 'My tasks'
+          )= t('views.tasks.userTasksFilter')
 
-        +submit(tasks)(value= 'submitBtn')
+        +submit(tasks)(value= t('views.tasks.show'))
 
   table.table.table-borderless.table-striped.mt-5.bg-white
     thead
