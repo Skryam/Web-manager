@@ -33,6 +33,7 @@ mixin buttonTo(action, method)
 mixin select(entity, propertyName, errors = {}, labelName = null, selectName, currentOption)
   - optArr = currentOption ? Array.from(currentOption) : []
   - propertyErrors = _.get(errors, propertyName)
+  - console.log('eeerrooooooooooooor', errors)
   - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)
   .mb-3(class=(errors[propertyName] && 'has-danger'))
@@ -49,7 +50,7 @@ mixin select(entity, propertyName, errors = {}, labelName = null, selectName, cu
         - isSelected = optArr.some(elem => parseInt(elem, 10) === parseInt(option.id, 10))
         option(value=option.id selected=isSelected)= option[selectName]
     if !_.isEmpty(propertyErrors)
-      div= propertyErrors.map(({ message }) => message).join('. ')
+      .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
 mixin textarea(entity, propertyName, errors = {}, labelName = null)
   - propertyErrors = _.get(errors, propertyName)

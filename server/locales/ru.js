@@ -2,7 +2,7 @@
 
 export default {
   translation: {
-    appName: 'Fastify Шаблон',
+    appName: 'Менеджер задач',
     flash: {
       session: {
         create: {
@@ -37,7 +37,7 @@ export default {
         },
         delete: {
           success: 'Статус успешно удален',
-          error: 'Связан с задачей',
+          error: 'Статус связан с действующей задачей, удаление невозможно',
         },
       },
       tasks: {
@@ -65,7 +65,7 @@ export default {
         },
         delete: {
           success: 'Метка успешно удалена',
-          error: 'Связана с задачей',
+          error: 'Метка связана с действующей задачей, удаление невозможно',
         },
       },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
@@ -85,13 +85,14 @@ export default {
     views: {
       session: {
         new: {
-          email: 'email',
-          password: 'пароль',
+          email: 'Email',
+          password: 'Пароль',
           signIn: 'Вход',
           submit: 'Войти',
         },
       },
       users: {
+        title: 'Пользователи',
         id: 'ID',
         email: 'Email',
         createdAt: 'Дата создания',
@@ -156,6 +157,7 @@ export default {
           status: 'Статус',
           executor: 'Исполнитель',
           submit: 'Сохранить',
+          labels: 'Метки',
         },
         view: {
           creator: 'Автор',
@@ -171,7 +173,7 @@ export default {
           status: 'Статус',
           executor: 'Исполнитель',
           submit: 'Сохранить',
-          labels: 'Метка',
+          labels: 'Метки',
         },
       },
       labels: {

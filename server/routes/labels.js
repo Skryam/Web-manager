@@ -28,7 +28,7 @@ export default (app) => {
         reply.redirect(app.reverse('labels'));
       } catch (errors) {
         req.flash('error', i18next.t('flash.labels.create.error'));
-        reply.render('labels/new', { label, errors });
+        reply.render('labels/new', { label, errors: errors.data });
       }
 
       return reply;

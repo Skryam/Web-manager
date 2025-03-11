@@ -17,17 +17,16 @@ export default (app) => {
     })
     .post('/statuses', async (req, reply) => {
       app.authenticate(req, reply);
-      const status = new app.objection.models.status();
-      status.$set(req.body.data);
+      const { data } = req.body;
 
       try {
-        const validStatus = await app.objection.models.status.fromJson(req.body.data);
+        const validStatus = await app.objection.models.status.fromJson(data);
         await app.objection.models.status.query().insert(validStatus);
         req.flash('info', i18next.t('flash.statuses.create.success'));
         reply.redirect(app.reverse('statuses'));
       } catch (errors) {
         req.flash('error', i18next.t('flash.statuses.create.error'));
-        reply.render('statuses/new', { status, errors });
+        reply.render('statuses/new', { status: data, errors: errors.data });
       }
 
       return reply;

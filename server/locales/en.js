@@ -2,7 +2,7 @@
 
 export default {
   translation: {
-    appName: 'Fastify Boilerplate',
+    appName: 'Task manager',
     flash: {
       session: {
         create: {
@@ -85,13 +85,14 @@ export default {
     views: {
       session: {
         new: {
-          email: 'email',
-          password: 'password',
+          email: 'Email',
+          password: 'Password',
           signIn: 'Login',
           submit: 'Login',
         },
       },
       users: {
+        title: 'Users',
         id: 'ID',
         email: 'Email',
         createdAt: 'Created at',
@@ -171,7 +172,7 @@ export default {
           description: 'Description',
           status: 'Status',
           executor: 'Executor',
-          labels: 'Label',
+          labels: 'Labels',
           submit: 'Submit',
         },
       },
