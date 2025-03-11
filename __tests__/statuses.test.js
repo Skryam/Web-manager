@@ -38,7 +38,7 @@ describe('test statuses CRUD', () => {
       cookies: cookie,
     });
 
-    expect(response.statusCode).toBe(302);
+    expect(response.statusCode).toBe(200);
   });
 
   it('new', async () => {
@@ -48,7 +48,7 @@ describe('test statuses CRUD', () => {
       cookies: cookie,
     });
 
-    expect(response.statusCode).toBe(302);
+    expect(response.statusCode).toBe(200);
   });
 
   it('create', async () => {
@@ -81,7 +81,7 @@ describe('test statuses CRUD', () => {
       cookies: cookie,
     });
 
-    expect(responseEdit.statusCode).toBe(302);
+    expect(responseEdit.statusCode).toBe(200);
 
     const responsePatch = await app.inject({
       method: 'PATCH',
