@@ -1,4 +1,3 @@
-
 import i18next from 'i18next';
 
 export default (app) => {
@@ -7,5 +6,5 @@ export default (app) => {
       const lng = i18next.language === 'en' ? 'ru' : 'en';
       i18next.changeLanguage(lng);
       reply.redirect(app.reverse('root'));
-  })
-}
+    });
+};
