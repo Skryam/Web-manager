@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.17% </span>
+                <span class="strong">70.58% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/17</span>
+                <span class='fraction'>12/17</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.17% </span>
+                <span class="strong">70.58% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/17</span>
+                <span class='fraction'>12/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -101,32 +101,32 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// @ts-check
@@ -135,9 +135,9 @@ import i18next from 'i18next';
 &nbsp;
 export default (app) =&gt; {
   app
-    .get('/session/new', { name: 'newSession' }, <span class="fstat-no" title="function not covered" >(r</span>eq, reply) =&gt; {
-      const signInForm = <span class="cstat-no" title="statement not covered" >{};</span>
-<span class="cstat-no" title="statement not covered" >      reply.render('session/new', { signInForm });</span>
+    .get('/session/new', { name: 'newSession' }, (req, reply) =&gt; {
+      const signInForm = {};
+      reply.render('session/new', { signInForm });
     })
     .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) =&gt; {
       <span class="missing-if-branch" title="if path not taken" >I</span>if (err) {
@@ -156,10 +156,10 @@ export default (app) =&gt; {
       reply.redirect(app.reverse('root'));
       return reply;
     }))
-    .delete('/session', <span class="fstat-no" title="function not covered" >(r</span>eq, reply) =&gt; {
-<span class="cstat-no" title="statement not covered" >      req.logOut();</span>
-<span class="cstat-no" title="statement not covered" >      req.flash('info', i18next.t('flash.session.delete.success'));</span>
-<span class="cstat-no" title="statement not covered" >      reply.redirect(app.reverse('root'));</span>
+    .delete('/session', (req, reply) =&gt; {
+      req.logOut();
+      req.flash('info', i18next.t('flash.session.delete.success'));
+      reply.redirect(app.reverse('root'));
     });
 };
 &nbsp;</pre></td></tr></table></pre>
@@ -169,7 +169,7 @@ export default (app) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-03-11T06:56:16.662Z
+                at 2025-03-11T06:57:33.932Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
