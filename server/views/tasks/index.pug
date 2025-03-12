@@ -9,11 +9,11 @@ block content
       +formFor()(action=route('tasks') method='get')
         .row
           .col-12.col-md
-            +filterSelect(statuses, 'status', errors = {}, t('views.tasks.edit.status'), 'name', filter.statusId)
+            +filterSelect(statuses, 'status', errors = {}, t('views.tasks.edit.status'), filter.status)
           .col-12.col-md
-            +filterSelect(users, 'executor', errors = {}, t('views.tasks.edit.executor'), 'email', filter.executorId)
+            +filterSelect(users, 'executor', errors = {}, t('views.tasks.edit.executor'), filter.executor)
           .col-12.col-md
-            +filterSelect(labels, 'label', errors = {}, t('views.tasks.edit.labels'), 'name', filter.label)
+            +filterSelect(labels, 'label', errors = {}, t('views.tasks.edit.labels'), filter.label)
         .mb-3.form-check
           input(
             id= 'data_isCreatorUser'
@@ -47,8 +47,8 @@ block content
           td
             a(href=`/tasks/${task.id}`)= task.name
           td= task.status.name
-          td= task.creator.email
-          td= task.executor ? task.executor.email : ''
+          td= task.creator.fullName()
+          td= task.executor ? task.executor.fullName() : ''
           td= formatDate(task.createdAt)
           td
             div.d-flex.flex-wrap

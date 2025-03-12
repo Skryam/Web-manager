@@ -29,7 +29,6 @@ export default (app) => {
           }
         })
         .withGraphFetched('[status, creator, executor, labels]');
-      console.log('@@@@@@@@@', tasks);
 
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
@@ -83,14 +82,13 @@ export default (app) => {
         reply.redirect(app.reverse('tasks'));
       } catch (errors) {
         console.log('error', errors);
-        const task = new app.objection.models.task();
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
 
         req.flash('error', i18next.t('flash.tasks.create.error'));
         reply.render('tasks/new', {
-          task, statuses, users, labels, errors: errors.data,
+          task: taskData, statuses, users, labels, errors: errors.data,
         });
       }
 
@@ -108,7 +106,6 @@ export default (app) => {
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
       const labels = await app.objection.models.label.query();
-      console.log('############', task);
       reply.render('tasks/edit', {
         task, statuses, users, labels,
       });
@@ -117,7 +114,6 @@ export default (app) => {
     .patch('/tasks/:id', async (req, reply) => {
       app.authenticate(req, reply);
       const { data } = req.body;
-      console.log('paaaaaaaaaaatch', data);
       data.statusId = parseInt(data.statusId, 10) || 0;
       data.executorId = parseInt(data.executorId, 10) || null;
 

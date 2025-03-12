@@ -1,5 +1,6 @@
 - const getInputName = (property) => `data[${property}]`
 - const getInputId = (property) => `data_${property}`
+- const checkId = (option) => (!option ? [] : Array.isArray(option) ? option : [option]);
 
 mixin formFor(entity = null)
   form&attributes(attributes)
@@ -30,10 +31,9 @@ mixin buttonTo(action, method)
     input(name="_method" type="hidden" value=method)
     input(type='submit')&attributes(attributes)
 
-mixin select(entity, propertyName, errors = {}, labelName = null, selectName, currentOption)
-  - optArr = currentOption ? Array.from(currentOption) : []
+mixin select(entity, propertyName, errors = {}, labelName = null, currentOption)
+  - optArr = checkId(currentOption)
   - propertyErrors = _.get(errors, propertyName)
-  - console.log('eeerrooooooooooooor', errors)
   - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)
   .mb-3(class=(errors[propertyName] && 'has-danger'))
@@ -47,8 +47,9 @@ mixin select(entity, propertyName, errors = {}, labelName = null, selectName, cu
     )&attributes(attributes)
       option(value='')
       each option in entity
+        - checkFullName = option.constructor.name === 'User' ? option.fullName() : option.name
         - isSelected = optArr.some(elem => parseInt(elem, 10) === parseInt(option.id, 10))
-        option(value=option.id selected=isSelected)= option[selectName]
+        option(value=option.id selected=isSelected)= checkFullName
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
@@ -68,8 +69,8 @@ mixin textarea(entity, propertyName, errors = {}, labelName = null)
     if !_.isEmpty(propertyErrors)
       .invalid-feedback= propertyErrors.map(({ message }) => message).join('. ')
 
-mixin filterSelect(entity, propertyName, errors = {}, labelName = null, selectName, currentOption)
-  - optArr = currentOption ? Array.from(currentOption) : []
+mixin filterSelect(entity, propertyName, errors, labelName = null, currentOption)
+  - optArr = checkId(currentOption)
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-select' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)
@@ -84,7 +85,6 @@ mixin filterSelect(entity, propertyName, errors = {}, labelName = null, selectNa
     )&attributes(attributes)
       option(value='')
       each option in entity
+        - checkFullName = option.constructor.name === 'User' ? option.fullName() : option.name
         - isSelected = optArr.some(elem => parseInt(elem, 10) === parseInt(option.id, 10))
-        option(value=option.id selected=isSelected)= option[selectName]
-    if !_.isEmpty(propertyErrors)
-      div= propertyErrors.map(({ message }) => message).join('. ')
+        option(value=option.id selected=isSelected)= checkFullName

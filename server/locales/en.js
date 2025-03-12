@@ -37,7 +37,7 @@ export default {
         },
         delete: {
           success: 'Status deleted successfully',
-          error: 'Related to the task',
+          error: 'Status is associated with an active task and cannot be deleted',
         },
       },
       tasks: {
@@ -65,7 +65,7 @@ export default {
         },
         delete: {
           success: 'Label deleted successfully',
-          error: 'Related to the task',
+          error: 'Label is associated with an active task and cannot be deleted',
         },
       },
       authError: 'Access denied! Please login',
@@ -94,14 +94,17 @@ export default {
       users: {
         title: 'Users',
         id: 'ID',
+        fullName: 'Full name',
         email: 'Email',
         createdAt: 'Created at',
         actions: 'Actions',
         editbtn: 'Edit',
         delete: 'Delete',
         new: {
-          email: 'email',
-          password: 'password',
+          fname: 'First name',
+          lname: 'Last name',
+          email: 'Email',
+          password: 'Password',
           submit: 'Register',
           signUp: 'Register',
         },

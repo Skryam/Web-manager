@@ -13,14 +13,14 @@ block content
             spawn.me-1.badge.bg-info.text-white= label.name
       .d-flex.flex-wrap.mb-3
         span.text-muted.me-2= t('views.tasks.view.creator')
-        span= task.creator.email
+        span= task.creator.fullName()
       .d-flex.flex-wrap.mb-3
         span.text-muted.me-2= t('views.tasks.view.executor')
         if (task.executor)
-          spawn= task.executor.email
+          spawn= task.executor.fullName()
       .d-flex.flex-wrap.mb-3
         span.text-muted.me-2= t('views.tasks.view.date')
-        span= task.createdAt
+        span= formatDate(task.createdAt)
       .d-flex.flex-wrap
         a.btn.btn-primary.me-1(href=`/tasks/${task.id}/edit`)= t('views.tasks.view.edit')
         form(action= `/tasks/${task.id}`, method="post")

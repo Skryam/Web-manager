@@ -15,11 +15,11 @@ html(lang="en")
         button.navbar-toggler(data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent")
           span.navbar-toggler-icon
         .collapse.navbar-collapse(id="navbarToggleExternalContent")
+          +buttonTo(route('changeLang'))(class="btn nav-link" value=t('layouts.application.lang')).bg-secondary.text-white.p-1
           .container-fluid
             ul.navbar-nav.mr-auto
               li.nav-item
                 a.nav-link(href=route('users'))= t('layouts.application.users')
-          +buttonTo(route('changeLang'))(class="btn nav-link" value=t('layouts.application.lang'))
           ul.navbar-nav
             if isAuthenticated()
               li.nav-item
@@ -28,7 +28,7 @@ html(lang="en")
                 a.nav-link(href=route('labels'))= t('layouts.application.labels')
               li.nav-item
                 a.nav-link(href=route('tasks'))= t('layouts.application.tasks')
-              li.nav-item
+              li.nav-item.ms-5
                 +buttonTo(route('session'), 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
             else
               li.nav-item
