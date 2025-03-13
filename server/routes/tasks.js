@@ -22,7 +22,6 @@ export default (app) => {
             );
           }
           if (filter.isCreatorUser) {
-            console.log(req.user.id);
             builder.where('creatorId', req.user.id);
           }
         })
