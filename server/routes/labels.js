@@ -4,19 +4,16 @@ import i18next from 'i18next';
 
 export default (app) => {
   app
-    .get('/labels', { name: 'labels' }, async (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/labels', { name: 'labels', preValidation: app.authenticate }, async (req, reply) => {
       const labels = await app.objection.models.label.query();
       reply.render('labels/index', { labels });
       return reply;
     })
-    .get('/labels/new', { name: 'newLabel' }, (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/labels/new', { name: 'newLabel', preValidation: app.authenticate }, (req, reply) => {
       const label = new app.objection.models.label();
       return reply.render('labels/new', { label });
     })
-    .post('/labels', async (req, reply) => {
-      app.authenticate(req, reply);
+    .post('/labels', { preValidation: app.authenticateasync }, async (req, reply) => {
       const { data } = req.body;
       const label = new app.objection.models.label();
       label.$set(data);
@@ -33,14 +30,12 @@ export default (app) => {
 
       return reply;
     })
-    .get('/labels/:id/edit', async (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/labels/:id/edit', { preValidation: app.authenticateasync }, async (req, reply) => {
       const label = await app.objection.models.label.query().findById(req.params.id);
       reply.render('labels/edit', { label });
       return reply;
     })
-    .patch('/labels/:id', async (req, reply) => {
-      app.authenticate(req, reply);
+    .patch('/labels/:id', { preValidation: app.authenticateasync }, async (req, reply) => {
       const label = await app.objection.models.label.query().findById(req.params.id);
 
       try {
@@ -54,8 +49,7 @@ export default (app) => {
 
       return reply;
     })
-    .delete('/labels/:id', async (req, reply) => {
-      app.authenticate(req, reply);
+    .delete('/labels/:id', { preValidation: app.authenticateasync }, async (req, reply) => {
       const { id } = req.params;
       const checkTask = await app.objection.models.tasksLabels.query().where('labelId', id);
 

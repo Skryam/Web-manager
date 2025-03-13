@@ -4,19 +4,16 @@ import i18next from 'i18next';
 
 export default (app) => {
   app
-    .get('/statuses', { name: 'statuses' }, async (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/statuses', { name: 'statuses', preValidation: app.authenticateasync }, async (req, reply) => {
       const statuses = await app.objection.models.status.query();
       reply.render('statuses/index', { statuses });
       return reply;
     })
-    .get('/statuses/new', { name: 'newStatus' }, (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/statuses/new', { name: 'newStatus', preValidation: app.authenticateasync }, (req, reply) => {
       const status = new app.objection.models.status();
       return reply.render('statuses/new', { status });
     })
-    .post('/statuses', async (req, reply) => {
-      app.authenticate(req, reply);
+    .post('/statuses', { preValidation: app.authenticateasync }, async (req, reply) => {
       const { data } = req.body;
 
       try {
@@ -31,14 +28,12 @@ export default (app) => {
 
       return reply;
     })
-    .get('/statuses/:id/edit', async (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/statuses/:id/edit', { preValidation: app.authenticateasync }, async (req, reply) => {
       const status = await app.objection.models.status.query().findById(req.params.id);
       reply.render('statuses/edit', { status });
       return reply;
     })
-    .patch('/statuses/:id', async (req, reply) => {
-      app.authenticate(req, reply);
+    .patch('/statuses/:id', { preValidation: app.authenticateasync }, async (req, reply) => {
       const status = await app.objection.models.status.query().findById(req.params.id);
 
       try {
@@ -52,8 +47,7 @@ export default (app) => {
 
       return reply;
     })
-    .delete('/statuses/:id', async (req, reply) => {
-      app.authenticate(req, reply);
+    .delete('/statuses/:id', { preValidation: app.authenticateasync }, async (req, reply) => {
       const { id } = req.params;
       const checkTask = await app.objection.models.task.query().where({ status_id: id });
       if (checkTask.length > 0) {

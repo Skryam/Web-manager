@@ -28,12 +28,8 @@ export default (app) => {
 
       return reply;
     })
-    .get('/users/:id/edit', { name: 'editUser' }, (req, reply) => {
-      app.authenticate(req, reply);
-      return reply.render('users/edit', { data: req.user });
-    })
-    .patch('/users/:id', { name: 'patchUser' }, async (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/users/:id/edit', { name: 'editUser', preValidation: app.authenticate }, (req, reply) => reply.render('users/edit', { data: req.user }))
+    .patch('/users/:id', { name: 'patchUser', preValidation: app.authenticate }, async (req, reply) => {
       const newData = req.body.data;
 
       try {
@@ -48,8 +44,7 @@ export default (app) => {
 
       return reply;
     })
-    .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
-      app.authenticate(req, reply);
+    .delete('/users/:id', { name: 'deleteUser', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const checkTask = await app.objection.models.task.query().where({ executor_id: id })
         .orWhere({ creator_id: id });

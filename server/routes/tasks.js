@@ -4,10 +4,8 @@ import i18next from 'i18next';
 
 export default (app) => {
   app
-    .get('/tasks', { name: 'tasks' }, async (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (req, reply) => {
       const filter = { ...req.query };
-      console.log('^^^^^^^^', filter);
 
       const tasks = await app.objection.models.task.query()
         .modify((builder) => {
@@ -33,13 +31,13 @@ export default (app) => {
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
       const labels = await app.objection.models.label.query();
+      console.log(tasks)
       reply.render('tasks/index', {
         tasks, statuses, users, labels, filter,
       });
       return reply;
     })
-    .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/tasks/new', { name: 'newTask', preValidation: app.authenticate }, async (req, reply) => {
       const task = new app.objection.models.task();
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
@@ -49,23 +47,14 @@ export default (app) => {
       });
       return reply;
     })
-    .post('/tasks', async (req, reply) => {
-      app.authenticate(req, reply);
+    .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
       console.log('begin');
-      const { data } = req.body;
-
-      const taskData = {
-        ...data,
-        creatorId: req.user.id,
-        statusId: parseInt(data.statusId, 10) || 0,
-        executorId: parseInt(data.executorId, 10) || null,
-      };
+      const data = { creatorId: req.user.id, ...req.body.data };
 
       try {
         await app.objection.models.task.transaction(async (trx) => {
           console.log('try');
-          console.log(data);
-          const validTask = await app.objection.models.task.fromJson(taskData);
+          const validTask = await app.objection.models.task.fromJson(data);
 
           const insertTask = await app.objection.models.task.query(trx).insertAndFetch(validTask);
           console.log('iiiiiiiiid', validTask.$id());
@@ -88,20 +77,18 @@ export default (app) => {
 
         req.flash('error', i18next.t('flash.tasks.create.error'));
         reply.render('tasks/new', {
-          task: taskData, statuses, users, labels, errors: errors.data,
+          task: data, statuses, users, labels, errors: errors.data,
         });
       }
 
       return reply;
     })
-    .get('/tasks/:id', async (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
       reply.render('tasks/view', { task });
       return reply;
     })
-    .get('/tasks/:id/edit', async (req, reply) => {
-      app.authenticate(req, reply);
+    .get('/tasks/:id/edit', { preValidation: app.authenticate }, async (req, reply) => {
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
@@ -111,8 +98,7 @@ export default (app) => {
       });
       return reply;
     })
-    .patch('/tasks/:id', async (req, reply) => {
-      app.authenticate(req, reply);
+    .patch('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const { data } = req.body;
       data.statusId = parseInt(data.statusId, 10) || 0;
       data.executorId = parseInt(data.executorId, 10) || null;
@@ -142,8 +128,7 @@ export default (app) => {
 
       return reply;
     })
-    .delete('/tasks/:id', async (req, reply) => {
-      app.authenticate(req, reply);
+    .delete('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
       const task = await app.objection.models.task.query().findById(id);
       if (task.creatorId !== req.user.id) {
