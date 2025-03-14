@@ -5,6 +5,8 @@ export default (app) => {
     .post('/change-language', { name: 'changeLang' }, (req, reply) => {
       const lng = i18next.language === 'en' ? 'ru' : 'en';
       i18next.changeLanguage(lng);
-      reply.redirect(req.headers.referer);
+      reply
+        // .code(201)
+        .redirect(req.headers.referer);
     });
 };

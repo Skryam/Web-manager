@@ -16,8 +16,8 @@ module.exports = class Task extends unique(BaseModel) {
   $parseJson(json) {
     const taskData = {
       ...json,
-      statusId: parseInt(json.statusId, 10),
-      executorId: parseInt(json.executorId, 10) || null,
+      statusId: Number(json.statusId),
+      executorId: Number(json.executorId),
     };
     return super.$parseJson(taskData);
   }
@@ -33,6 +33,14 @@ module.exports = class Task extends unique(BaseModel) {
         statusId: { type: 'integer', minimum: 1 },
         creatorId: { type: 'integer' },
         executorId: { type: ['integer', 'null'] },
+      },
+    };
+  }
+
+  static get modifiers() {
+    return {
+      filter(builder, column, query) {
+        builder.where(column, query);
       },
     };
   }

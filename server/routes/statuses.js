@@ -6,12 +6,16 @@ export default (app) => {
   app
     .get('/statuses', { name: 'statuses', preValidation: app.authenticateasync }, async (req, reply) => {
       const statuses = await app.objection.models.status.query();
-      reply.render('statuses/index', { statuses });
+      reply
+        // .code(200)
+        .render('statuses/index', { statuses });
       return reply;
     })
     .get('/statuses/new', { name: 'newStatus', preValidation: app.authenticateasync }, (req, reply) => {
       const status = new app.objection.models.status();
-      return reply.render('statuses/new', { status });
+      return reply
+        // .code(200)
+        .render('statuses/new', { status });
     })
     .post('/statuses', { preValidation: app.authenticateasync }, async (req, reply) => {
       const { data } = req.body;
@@ -20,17 +24,18 @@ export default (app) => {
         const validStatus = await app.objection.models.status.fromJson(data);
         await app.objection.models.status.query().insert(validStatus);
         req.flash('info', i18next.t('flash.statuses.create.success'));
-        reply.redirect(app.reverse('statuses'));
+        reply.redirect(app.reverse('statuses'), 303);
       } catch (errors) {
         req.flash('error', i18next.t('flash.statuses.create.error'));
         reply.render('statuses/new', { status: data, errors: errors.data });
       }
-
       return reply;
     })
     .get('/statuses/:id/edit', { preValidation: app.authenticateasync }, async (req, reply) => {
       const status = await app.objection.models.status.query().findById(req.params.id);
-      reply.render('statuses/edit', { status });
+      reply
+        // .code(200)
+        .render('statuses/edit', { status });
       return reply;
     })
     .patch('/statuses/:id', { preValidation: app.authenticateasync }, async (req, reply) => {
@@ -39,7 +44,9 @@ export default (app) => {
       try {
         await status.$query().patch({ name: req.body.data.name });
         req.flash('info', i18next.t('flash.statuses.patch.success'));
-        reply.redirect(app.reverse('statuses'));
+        reply
+          // .code(303)
+          .redirect(app.reverse('statuses'));
       } catch (errors) {
         req.flash('error', i18next.t('flash.statuses.patch.error'));
         reply.render('statuses/edit', { status, errors: errors.data });
@@ -56,7 +63,9 @@ export default (app) => {
       } else {
         await app.objection.models.status.query().deleteById(id);
         req.flash('info', i18next.t('flash.statuses.delete.success'));
-        reply.redirect('/statuses');
+        reply
+          // .code(303)
+          .redirect('/statuses');
       }
       return reply;
     });

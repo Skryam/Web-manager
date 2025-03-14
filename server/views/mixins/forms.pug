@@ -83,7 +83,7 @@ mixin filterSelect(entity, propertyName, errors, labelName = null, currentOption
       name=propertyName
       class=classLine
     )&attributes(attributes)
-      option(value='')
+      option
       each option in entity
         - checkFullName = option.constructor.name === 'User' ? option.fullName() : option.name
         - isSelected = optArr.some(elem => parseInt(elem, 10) === parseInt(option.id, 10))

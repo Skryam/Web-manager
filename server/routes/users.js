@@ -30,16 +30,16 @@ export default (app) => {
     })
     .get('/users/:id/edit', { name: 'editUser', preValidation: app.authenticate }, (req, reply) => reply.render('users/edit', { data: req.user }))
     .patch('/users/:id', { name: 'patchUser', preValidation: app.authenticate }, async (req, reply) => {
-      const newData = req.body.data;
+      const { data } = req.body;
 
       try {
         const person = await app.objection.models.user.query().findById(req.user.id);
-        await person.$query().patch({ email: newData.email, password: newData.password });
+        await person.$query().patch(data);
         req.flash('info', i18next.t('flash.users.patch.success'));
         reply.redirect(app.reverse('users'));
       } catch (err) {
         req.flash('error', i18next.t('flash.users.patch.error'));
-        reply.render('users/edit', { data: req.user, errors: err.data });
+        reply.render('users/edit', { data, errors: err.data });
       }
 
       return reply;
