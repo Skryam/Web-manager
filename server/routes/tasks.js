@@ -6,11 +6,11 @@ export default (app) => {
   app
     .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (req, reply) => {
       const filter = { ...req.query, userId: req.user.id };
-      console.log(filter)
+      console.log(filter);
 
       const tasks = await app.objection.models.task.query().withGraphJoined('[status, creator, executor, labels]')
         .skipUndefined()
-        .modify('filter', 'statusId', filter.status)
+        .modify('filter', 'statusId', filter.status);
         // .modify('filter', 'executorId', filter.executor)
         // .modify('filter', 'labels.id', filter.label)
         // .modify('filter', 'creatorId', filter.userId)
@@ -41,21 +41,23 @@ export default (app) => {
     .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
       console.log('begin');
       const data = { creatorId: req.user.id, ...req.body.data };
+      const labelsForInsert = await app.objection.models.label.query().findByIds(data.labels || []);
+      console.log(data);
 
       try {
         await app.objection.models.task.transaction(async (trx) => {
           console.log('try');
           const validTask = await app.objection.models.task.fromJson(data);
 
-          const insertTask = await app.objection.models.task.query(trx).insertAndFetch(validTask);
-          console.log('iiiiiiiiid', validTask.$id());
-
-          if (data.labels) {
-            await Promise.all(
-              [...data.labels].flatMap((label) => insertTask.$relatedQuery('labels', trx).relate(label)),
-            );
-          }
-          return insertTask;
+          return app.objection.models.task.query(trx).insertGraph(
+            [{
+              ...validTask,
+              labels: labelsForInsert,
+            }],
+            {
+              relate: true,
+            },
+          );
         });
 
         req.flash('info', i18next.t('flash.tasks.create.success'));
@@ -97,19 +99,28 @@ export default (app) => {
     })
     .patch('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const { data } = req.body;
-      data.statusId = parseInt(data.statusId, 10) || 0;
-      data.executorId = parseInt(data.executorId, 10) || null;
-
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
+      const updateLabels = await app.objection.models.label.query().findByIds(data.labels || []);
 
       try {
-        await task.$query().patch(data);
-        await task.$relatedQuery('labels').unrelate();
-        if (data.labels && data.labels.length > 0) {
-          [...data.labels].forEach(async (label) => {
-            await task.$relatedQuery('labels').relate(label);
-          });
-        }
+        await app.objection.models.task.transaction(async (trx) => {
+          const parse = await app.objection.models.task.fromJson(data, { skipValidation: true });
+          console.log('1111111111111', parse);
+
+          return app.objection.models.task.query(trx).upsertGraph(
+            {
+              ...task,
+              ...parse,
+              labels: updateLabels,
+            },
+            {
+              relate: true,
+              unrealte: true,
+              noUpdate: ['labels'],
+            },
+          );
+        });
+
         req.flash('info', i18next.t('flash.tasks.patch.success'));
         reply
           // .code(200)
