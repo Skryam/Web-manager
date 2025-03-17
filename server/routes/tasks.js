@@ -103,52 +103,17 @@ export default (app) => {
       return reply;
     })
     .patch('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
-      const { id } = req.params;
-      const datas = await app.objection.models.task.fromJson(req.body.data, {
-        skipValidation: true,
-      });
-      const {
-        labels, ...patchTask
-      } = datas;
-      try {
-        await app.objection.models.task.transaction(async (trx) => {
-          const task = await app.objection.models.task.query(trx).findById(id);
-          const updateLabels = await app.objection.models.label.query(trx)
-            .findByIds(labels || []);
-          console.log(updateLabels)
-          await app.objection.models.task.query(trx)
-            .upsertGraph({
-              ...patchTask,
-              id: task.id,
-              creatorId: task.creatorId,
-              labels:
-        updateLabels,
-            }, { relate: true, unrelate: true, noUpdate: ['labels'] });
-        });
-
-        /* const { data } = req.body;
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
-      const updateLabels = await app.objection.models.label.query().findByIds(data.labels || []);
 
       try {
-        await app.objection.models.task.transaction(async (trx) => {
-          const parse = await app.objection.models.task.fromJson(data);
-          console.log('1111111111111', task, parse);
-
-          return app.objection.models.task.query(trx).upsertGraph(
-            {
-              ...parse,
-              id: task.id,
-              creatorId: task.creatorId,
-              labels: updateLabels,
-            },
-            {
-              relate: true,
-              unrealte: true,
-              noUpdate: ['labels'],
-            },
-          );
-        }); */
+        const parsed = await app.objection.models.task.fromJson(req.body.data);
+        await task.$query().patch(parsed);
+        await task.$relatedQuery('labels').unrelate();
+        if (parsed.labels && parsed.labels.length > 0) {
+          [...parsed.labels].forEach(async (label) => {
+            await task.$relatedQuery('labels').relate(label);
+          });
+        }
 
         req.flash('info', i18next.t('flash.tasks.patch.success'));
         reply
@@ -159,7 +124,6 @@ export default (app) => {
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
         const dbLabels = await app.objection.models.label.query();
-        const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
         req.flash('error', i18next.t('flash.tasks.patch.error'));
         reply.render('tasks/edit', {
           task, statuses, users, labels: dbLabels, errors: errors.data,
