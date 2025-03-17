@@ -5,20 +5,25 @@ import i18next from 'i18next';
 export default (app) => {
   app
     .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (req, reply) => {
-      const filter = { ...req.query, userId: req.user.id };
-      console.log(filter);
+      const { query } = req;
+
+      const filter = {
+        status: query.status || undefined,
+        executor: query.executor || undefined,
+        label: query.label || undefined,
+        userId: query.isCreatorUser ? req.user.id : undefined,
+      };
 
       const tasks = await app.objection.models.task.query().withGraphJoined('[status, creator, executor, labels]')
         .skipUndefined()
-        .modify('filter', 'statusId', filter.status);
-        // .modify('filter', 'executorId', filter.executor)
-        // .modify('filter', 'labels.id', filter.label)
-        // .modify('filter', 'creatorId', filter.userId)
+        .modify('filter', 'statusId', filter.status)
+        .modify('filter', 'executorId', filter.executor)
+        .modify('filter', 'labels.id', filter.label)
+        .modify('filter', 'creatorId', filter.userId);
 
       const statuses = await app.objection.models.status.query();
       const users = await app.objection.models.user.query();
       const labels = await app.objection.models.label.query();
-      console.log(tasks);
       reply
         // .code(200)
         .render('tasks/index', {
@@ -98,19 +103,43 @@ export default (app) => {
       return reply;
     })
     .patch('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
-      const { data } = req.body;
+      const { id } = req.params;
+      const datas = await app.objection.models.task.fromJson(req.body.data, {
+        skipValidation: true,
+      });
+      const {
+        labels, ...patchTask
+      } = datas;
+      try {
+        await app.objection.models.task.transaction(async (trx) => {
+          const task = await app.objection.models.task.query(trx).findById(id);
+          const updateLabels = await app.objection.models.label.query(trx)
+            .findByIds(labels || []);
+          console.log(updateLabels)
+          await app.objection.models.task.query(trx)
+            .upsertGraph({
+              ...patchTask,
+              id: task.id,
+              creatorId: task.creatorId,
+              labels:
+        updateLabels,
+            }, { relate: true, unrelate: true, noUpdate: ['labels'] });
+        });
+
+        /* const { data } = req.body;
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
       const updateLabels = await app.objection.models.label.query().findByIds(data.labels || []);
 
       try {
         await app.objection.models.task.transaction(async (trx) => {
-          const parse = await app.objection.models.task.fromJson(data, { skipValidation: true });
-          console.log('1111111111111', parse);
+          const parse = await app.objection.models.task.fromJson(data);
+          console.log('1111111111111', task, parse);
 
           return app.objection.models.task.query(trx).upsertGraph(
             {
-              ...task,
               ...parse,
+              id: task.id,
+              creatorId: task.creatorId,
               labels: updateLabels,
             },
             {
@@ -119,7 +148,7 @@ export default (app) => {
               noUpdate: ['labels'],
             },
           );
-        });
+        }); */
 
         req.flash('info', i18next.t('flash.tasks.patch.success'));
         reply
@@ -129,10 +158,11 @@ export default (app) => {
         console.log(errors);
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
-        const labels = await app.objection.models.label.query();
+        const dbLabels = await app.objection.models.label.query();
+        const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
         req.flash('error', i18next.t('flash.tasks.patch.error'));
         reply.render('tasks/edit', {
-          task, statuses, users, labels, errors: errors.data,
+          task, statuses, users, labels: dbLabels, errors: errors.data,
         });
       }
 

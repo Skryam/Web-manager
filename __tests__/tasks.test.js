@@ -95,6 +95,22 @@ describe('test statuses CRUD', () => {
     expect(response.payload).toContain('elbert_abshire52@gmail.com');
   });
 
+  it('filterSome', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: app.reverse('tasks'),
+      query: {
+        status: '',
+        executor: 'elbert_abshire52@gmail.com',
+        label: '',
+      },
+      cookies: cookie,
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.payload).toContain('elbert_abshire52@gmail.com');
+  })
+
   it('patch / delete', async () => {
     const task = await models.task.query().findOne({ name: testData.tasks.new.name });
     const paramsPatched = testData.tasks.patched;

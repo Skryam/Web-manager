@@ -17,7 +17,7 @@ module.exports = class Task extends unique(BaseModel) {
     const taskData = {
       ...json,
       statusId: Number(json.statusId),
-      executorId: Number(json.executorId),
+      executorId: parseInt(json.executorId, 10) || null,
     };
     return super.$parseJson(taskData);
   }
