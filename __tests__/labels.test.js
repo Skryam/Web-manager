@@ -2,7 +2,7 @@
 import fastify from 'fastify';
 
 import init from '../server/plugin.js';
-import { getTestData, getSession } from './helpers/index.js';
+import { getTestData, getSession, prepareData } from './helpers/index.js';
 
 describe('test statuses CRUD', () => {
   let app;
@@ -19,6 +19,9 @@ describe('test statuses CRUD', () => {
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
+    await knex.migrate.latest();
+    await prepareData(app);
+    cookie = await getSession(app);
   });
 
   beforeEach(async () => {
@@ -26,8 +29,6 @@ describe('test statuses CRUD', () => {
     // тесты не должны зависеть друг от друга
     // перед каждым тестом выполняем миграции
     // и заполняем БД тестовыми данными
-    await knex.migrate.latest();
-    cookie = await getSession(app);
   });
 
   it('index', async () => {
@@ -69,10 +70,8 @@ describe('test statuses CRUD', () => {
     expect(label).toMatchObject(expected);
   });
 
-  it('patch / delete', async () => {
-    const label = await models.label.query().findOne({ name: testData.labels.new.name });
-    const paramsPatched = testData.labels.patched;
-
+  it('edit', async () => {
+    const label = await models.label.query().findOne({ name: 'label1' });
     const responseEdit = await app.inject({
       method: 'GET',
       url: `/labels/${label.id}/edit`,
@@ -81,6 +80,11 @@ describe('test statuses CRUD', () => {
     });
 
     expect(responseEdit.statusCode).toBe(200);
+  });
+
+  it('patch', async () => {
+    const label = await models.label.query().findOne({ name: 'label1' });
+    const paramsPatched = testData.labels.patched;
 
     const responsePatch = await app.inject({
       method: 'PATCH',
@@ -98,7 +102,10 @@ describe('test statuses CRUD', () => {
     };
     const patchedLabel = await models.label.query().findOne({ id: label.id });
     expect(patchedLabel).toMatchObject(expected);
+  });
 
+  it('delete', async () => {
+    const label = await models.label.query().findOne({ name: 'label1' });
     const responseDelete = await app.inject({
       method: 'DELETE',
       url: `/labels/${label.id}`,
@@ -110,9 +117,7 @@ describe('test statuses CRUD', () => {
   });
 
   afterEach(async () => {
-    // Пока Segmentation fault: 11
-    // после каждого теста откатываем миграции
-    // await knex.migrate.rollback();
+    await knex.migrate.rollback();
   });
 
   afterAll(async () => {

@@ -1,5 +1,7 @@
 {
   "insert": {
+    "frist_name": "testing",
+    "last_name": "test",
     "email": "test@test.com",
     "passwordDigest": "87c6374c24969f2af49433baa6d8b96e2bdb17a509b79049d2edb4fde98e4c46"
   },

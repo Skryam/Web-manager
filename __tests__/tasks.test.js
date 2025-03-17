@@ -30,6 +30,7 @@ describe('test statuses CRUD', () => {
   });
 
   beforeEach(async () => {
+    await knex.migrate.latest();
   });
 
   it('index', async () => {
