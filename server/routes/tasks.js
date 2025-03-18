@@ -6,6 +6,7 @@ export default (app) => {
   app
     .get('/tasks', { name: 'tasks', preValidation: app.authenticate }, async (req, reply) => {
       const { query } = req;
+      console.log('!!!!!!!!!!!!!!!!!!!!!!', query)
 
       const filter = {
         status: query.status || undefined,
@@ -104,6 +105,7 @@ export default (app) => {
     })
     .patch('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
+      console.log(req.body.data, req.body.data.labels)
 
       try {
         const parsed = await app.objection.models.task.fromJson(req.body.data);

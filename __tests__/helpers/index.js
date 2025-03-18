@@ -19,6 +19,8 @@ export const prepareData = async (app) => {
   await knex('users').insert(getFixtureData('users.json'));
   await knex('statuses').insert(getFixtureData('status.json'));
   await knex('labels').insert(getFixtureData('labels.json'));
+  await knex('tasks').insert(getFixtureData('tasks.json'));
+  await knex('tasks_labels').insert(getFixtureData('taskLabels.json'));
 };
 
 export const getSession = async (app) => {

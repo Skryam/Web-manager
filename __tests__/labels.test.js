@@ -4,7 +4,7 @@ import fastify from 'fastify';
 import init from '../server/plugin.js';
 import { getTestData, getSession, prepareData } from './helpers/index.js';
 
-describe('test statuses CRUD', () => {
+describe('test labels CRUD', () => {
   let app;
   let knex;
   let models;
@@ -19,9 +19,6 @@ describe('test statuses CRUD', () => {
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
-    await knex.migrate.latest();
-    await prepareData(app);
-    cookie = await getSession(app);
   });
 
   beforeEach(async () => {
@@ -29,6 +26,9 @@ describe('test statuses CRUD', () => {
     // тесты не должны зависеть друг от друга
     // перед каждым тестом выполняем миграции
     // и заполняем БД тестовыми данными
+    await knex.migrate.latest();
+    await prepareData(app);
+    cookie = await getSession(app);
   });
 
   it('index', async () => {
@@ -75,7 +75,6 @@ describe('test statuses CRUD', () => {
     const responseEdit = await app.inject({
       method: 'GET',
       url: `/labels/${label.id}/edit`,
-      // используем полученные ранее куки
       cookies: cookie,
     });
 
@@ -105,7 +104,7 @@ describe('test statuses CRUD', () => {
   });
 
   it('delete', async () => {
-    const label = await models.label.query().findOne({ name: 'label1' });
+    const label = await models.label.query().findOne({ name: 'label3' });
     const responseDelete = await app.inject({
       method: 'DELETE',
       url: `/labels/${label.id}`,

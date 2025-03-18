@@ -19,18 +19,12 @@ describe('test statuses CRUD', () => {
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
-
-    // TODO: пока один раз перед тестами
-    // тесты не должны зависеть друг от друга
-    // перед каждым тестом выполняем миграции
-    // и заполняем БД тестовыми данными
-    await knex.migrate.latest();
-    await prepareData(app);
-    cookie = await getSession(app);
   });
 
   beforeEach(async () => {
     await knex.migrate.latest();
+    await prepareData(app);
+    cookie = await getSession(app);
   });
 
   it('index', async () => {
@@ -70,10 +64,10 @@ describe('test statuses CRUD', () => {
       description: 'testDescription',
       statusId: 1,
       executorId: 1,
-      labels: expect.arrayContaining([
-        expect.objectContaining({ id: 1 }),
-        expect.objectContaining({ id: 2 }),
-      ]),
+      labels: [
+        { id: 1 },
+        { id: 2 },
+      ],
     };
     const task = await models.task.query().findOne({ name: params.name }).withGraphFetched('labels');
     expect(task).toMatchObject(expected);
@@ -84,16 +78,15 @@ describe('test statuses CRUD', () => {
       method: 'GET',
       url: app.reverse('tasks'),
       query: {
-        status: 'testStatus',
-        executor: 'elbert_abshire52@gmail.com',
-        label: 'label1',
-        isCreatorUser: 'on',
+        status: '1',
+        executor: '1',
+        label: '1',
       },
       cookies: cookie,
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.payload).toContain('elbert_abshire52@gmail.com');
+    expect(response.payload).toContain('task1');
   });
 
   it('filterSome', async () => {
@@ -102,28 +95,30 @@ describe('test statuses CRUD', () => {
       url: app.reverse('tasks'),
       query: {
         status: '',
-        executor: 'elbert_abshire52@gmail.com',
-        label: '',
+        executor: '',
+        label: '2',
       },
       cookies: cookie,
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.payload).toContain('elbert_abshire52@gmail.com');
-  })
+    expect(response.payload).toContain('task2');
+  });
 
-  it('patch / delete', async () => {
-    const task = await models.task.query().findOne({ name: testData.tasks.new.name });
-    const paramsPatched = testData.tasks.patched;
-
+  it('edit', async () => {
+    const task = await models.task.query().findOne({ name: 'task1' });
     const responseEdit = await app.inject({
       method: 'GET',
       url: `/tasks/${task.id}/edit`,
-      // используем полученные ранее куки
       cookies: cookie,
     });
 
     expect(responseEdit.statusCode).toBe(200);
+  });
+
+  it('patch', async () => {
+    const task = await models.task.query().findOne({ name: 'task2' });
+    const paramsPatched = testData.tasks.patched;
 
     const responsePatch = await app.inject({
       method: 'PATCH',
@@ -141,11 +136,35 @@ describe('test statuses CRUD', () => {
       description: paramsPatched.description,
       statusId: 1,
       executorId: null,
+      labels: [
+        { id: 2 },
+      ],
     };
 
     const patchedStatus = await models.task.query().findOne({ id: task.id }).withGraphFetched('labels');
     expect(patchedStatus).toMatchObject(expected);
+  });
 
+  it('delete', async () => {
+    // создаем новую
+    const response = await app.inject({
+      method: 'POST',
+      url: app.reverse('tasks'),
+      payload: {
+        data: {
+          name: 'superTask',
+          description: '',
+          statusId: '1',
+          executorId: '',
+          labels: '1',
+        },
+      },
+      cookies: cookie,
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    const task = await models.task.query().findOne({ name: 'superTask' });
     const responseDelete = await app.inject({
       method: 'DELETE',
       url: `/tasks/${task.id}`,
@@ -157,9 +176,7 @@ describe('test statuses CRUD', () => {
   });
 
   afterEach(async () => {
-    // Пока Segmentation fault: 11
-    // после каждого теста откатываем миграции
-    // await knex.migrate.rollback();
+    await knex.migrate.rollback();
   });
 
   afterAll(async () => {

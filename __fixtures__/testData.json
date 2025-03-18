@@ -1,6 +1,8 @@
 {
   "users": {
     "new": {
+      "firstName": "test",
+      "lastName": "user",
       "email": "malika_hodkiewicz75@live.com",
       "password": "RLJvaIgPOnX5r03у"
     },
@@ -33,7 +35,8 @@
       "name": "patchedTask",
       "description": "",
       "statusId": "1",
-      "executorId": ""
+      "executorId": "",
+      "labels": "2"
     }
   },
   "labels": {

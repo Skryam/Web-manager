@@ -5,12 +5,13 @@ import fastify from 'fastify';
 
 import init from '../server/plugin.js';
 import encrypt from '../server/lib/secure.cjs';
-import { getTestData, prepareData } from './helpers/index.js';
+import { getTestData, prepareData, getSession } from './helpers/index.js';
 
 describe('test users CRUD', () => {
   let app;
   let knex;
   let models;
+  let cookie;
   const testData = getTestData();
 
   beforeAll(async () => {
@@ -30,6 +31,7 @@ describe('test users CRUD', () => {
     // и заполняем БД тестовыми данными
     await knex.migrate.latest();
     await prepareData(app);
+    cookie = await getSession(app);
   });
 
   it('index', async () => {
@@ -69,27 +71,8 @@ describe('test users CRUD', () => {
     expect(user).toMatchObject(expected);
   });
 
-  it('patch / delete', async () => {
-    const paramsNew = testData.users.new;
-    const paramsPatched = testData.users.patched;
-
-    const responseSignIn = await app.inject({
-      method: 'POST',
-      url: app.reverse('session'),
-      payload: {
-        data: paramsNew,
-      },
-    });
-
-    expect(responseSignIn.statusCode).toBe(302);
-    // после успешной аутентификации получаем куки из ответа,
-    // они понадобятся для выполнения запросов на маршруты требующие
-    // предварительную аутентификацию
-    const user = await models.user.query().findOne({ email: paramsNew.email });
-    const [sessionCookie] = responseSignIn.cookies;
-    const { name, value } = sessionCookie;
-    const cookie = { [name]: value };
-
+  it('edit', async () => {
+    const user = await models.user.query().findOne({ email: 'test@test.com' });
     const responseEdit = await app.inject({
       method: 'GET',
       url: `/users/${user.id}/edit`,
@@ -98,6 +81,11 @@ describe('test users CRUD', () => {
     });
 
     expect(responseEdit.statusCode).toBe(200);
+  });
+
+  it('patch', async () => {
+    const user = await models.user.query().findOne({ email: 'test@test.com' });
+    const paramsPatched = testData.users.patched;
 
     const responsePatch = await app.inject({
       method: 'PATCH',
@@ -116,7 +104,10 @@ describe('test users CRUD', () => {
     };
     const patchedUser = await models.user.query().findOne({ id: user.id });
     expect(patchedUser).toMatchObject(expected);
+  });
 
+  it('delete', async () => {
+    const user = await models.user.query().findOne({ email: 'test@test.com' });
     const responseDelete = await app.inject({
       method: 'DELETE',
       url: `/users/${user.id}`,
@@ -128,9 +119,7 @@ describe('test users CRUD', () => {
   });
 
   afterEach(async () => {
-    // Пока Segmentation fault: 11
-    // после каждого теста откатываем миграции
-    // await knex.migrate.rollback();
+    await knex.migrate.rollback();
   });
 
   afterAll(async () => {
