@@ -142,7 +142,7 @@ export default async (app, _options) => {
   setUpStaticAssets(app);
   addRoutes(app);
   addHooks(app);
-  // addRollbarHandler(app);
+  addRollbarHandler(app);
 
   return app;
 };
