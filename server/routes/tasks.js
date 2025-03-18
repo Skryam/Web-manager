@@ -44,14 +44,11 @@ export default (app) => {
       return reply;
     })
     .post('/tasks', { preValidation: app.authenticate }, async (req, reply) => {
-      console.log('begin');
       const data = { creatorId: req.user.id, ...req.body.data };
       const labelsForInsert = await app.objection.models.label.query().findByIds(data.labels || []);
-      console.log(data);
 
       try {
         await app.objection.models.task.transaction(async (trx) => {
-          console.log('try');
           const validTask = await app.objection.models.task.fromJson(data);
 
           return app.objection.models.task.query(trx).insertGraph(
@@ -70,7 +67,6 @@ export default (app) => {
           // .code(201)
           .redirect(app.reverse('tasks'));
       } catch (errors) {
-        console.log('error', errors);
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
@@ -120,7 +116,6 @@ export default (app) => {
           // .code(200)
           .redirect(app.reverse('tasks'));
       } catch (errors) {
-        console.log(errors);
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
         const dbLabels = await app.objection.models.label.query();
