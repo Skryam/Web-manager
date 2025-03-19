@@ -6,9 +6,7 @@ export default (app) => {
   app
     .get('/session/new', { name: 'newSession' }, (req, reply) => {
       const signInForm = {};
-      reply
-        // .code(200)
-        .render('session/new', { signInForm });
+      reply.render('session/new', { signInForm });
     })
     .post('/session', { name: 'session' }, app.fp.authenticate('form', async (req, reply, err, user) => {
       if (err) {
@@ -24,16 +22,12 @@ export default (app) => {
       }
       await req.logIn(user);
       req.flash('success', i18next.t('flash.session.create.success'));
-      reply
-        // .code(201)
-        .redirect(app.reverse('root'));
+      reply.redirect(app.reverse('root'));
       return reply;
     }))
     .delete('/session', (req, reply) => {
       req.logOut();
       req.flash('info', i18next.t('flash.session.delete.success'));
-      reply
-        // .code(200)
-        .redirect(app.reverse('root'));
+      reply.redirect(app.reverse('root'));
     });
 };

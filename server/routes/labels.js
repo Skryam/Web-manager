@@ -6,16 +6,12 @@ export default (app) => {
   app
     .get('/labels', { name: 'labels', preValidation: app.authenticate }, async (req, reply) => {
       const labels = await app.objection.models.label.query();
-      reply
-        // .code(200)
-        .render('labels/index', { labels });
+      reply.render('labels/index', { labels });
       return reply;
     })
     .get('/labels/new', { name: 'newLabel', preValidation: app.authenticate }, (req, reply) => {
       const label = new app.objection.models.label();
-      return reply
-        // .code(200)
-        .render('labels/new', { label });
+      return reply.render('labels/new', { label });
     })
     .post('/labels', { preValidation: app.authenticateasync }, async (req, reply) => {
       const { data } = req.body;
@@ -26,9 +22,7 @@ export default (app) => {
         const validLabel = await app.objection.models.label.fromJson(data);
         await app.objection.models.label.query().insert(validLabel);
         req.flash('info', i18next.t('flash.labels.create.success'));
-        reply
-          // .code(201)
-          .redirect(app.reverse('labels'));
+        reply.redirect(app.reverse('labels'));
       } catch (errors) {
         req.flash('error', i18next.t('flash.labels.create.error'));
         reply.render('labels/new', { label, errors: errors.data });
@@ -38,9 +32,7 @@ export default (app) => {
     })
     .get('/labels/:id/edit', { preValidation: app.authenticateasync }, async (req, reply) => {
       const label = await app.objection.models.label.query().findById(req.params.id);
-      reply
-        // .code(200)
-        .render('labels/edit', { label });
+      reply.render('labels/edit', { label });
       return reply;
     })
     .patch('/labels/:id', { preValidation: app.authenticateasync }, async (req, reply) => {
@@ -49,9 +41,7 @@ export default (app) => {
       try {
         await label.$query().patch({ name: req.body.data.name });
         req.flash('info', i18next.t('flash.labels.patch.success'));
-        reply
-          // .code(200)
-          .redirect(app.reverse('labels'));
+        reply.redirect(app.reverse('labels'));
       } catch (errors) {
         req.flash('error', i18next.t('flash.labels.patch.error'));
         reply.render('labels/edit', { label, errors: errors.data });
@@ -69,9 +59,7 @@ export default (app) => {
       } else {
         await app.objection.models.label.query().deleteById(id);
         req.flash('info', i18next.t('flash.labels.delete.success'));
-        reply
-          // .code(200)
-          .redirect('/labels');
+        reply.redirect('/labels');
       }
       return reply;
     });
