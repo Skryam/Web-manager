@@ -86,12 +86,12 @@ const addHooks = (app) => {
   });
 };
 
-const addRollbarHandler = (app) => {
+/* const addRollbarHandler = (app) => {
   app.setErrorHandler((error, request, reply) => {
     rollbar.error(error, request);
     reply.status(500).send({ error: 'Internal Server Error' });
   });
-};
+}; */
 
 const registerPlugins = async (app) => {
   await app.register(fastifySensible);
@@ -142,7 +142,7 @@ export default async (app, _options) => {
   setUpStaticAssets(app);
   addRoutes(app);
   addHooks(app);
-  addRollbarHandler(app);
+  // addRollbarHandler(app);
 
   return app;
 };
