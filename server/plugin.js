@@ -17,7 +17,7 @@ import qs from 'qs';
 import Pug from 'pug';
 import i18next from 'i18next';
 
-import Rollbar from 'rollbar';
+// import Rollbar from 'rollbar';
 import ru from './locales/ru.js';
 import en from './locales/en.js';
 // @ts-ignore
@@ -27,11 +27,11 @@ import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 
-const rollbar = new Rollbar({
+/* const rollbar = new Rollbar({
   accessToken: process.env.accessToken,
   captureUncaught: true,
   captureUnhandledRejections: true,
-});
+}); */
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
