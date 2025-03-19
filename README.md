@@ -73,3 +73,7 @@ Before running the application, ensure that the .env file is properly configured
 cp .env.example .env
 ```
 Update the **.env** file with your desired settings, such as database connection details or server ports.
+
+---
+
+### Try project example here: https://webmanagercourse.onrender.com

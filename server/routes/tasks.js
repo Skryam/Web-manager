@@ -90,16 +90,32 @@ export default (app) => {
     })
     .patch('/tasks/:id', { preValidation: app.authenticate }, async (req, reply) => {
       const task = await app.objection.models.task.query().findById(req.params.id).withGraphFetched('[status, creator, executor, labels]');
+      const parse = await app.objection.models.task
+        .fromJson(req.body.data, { skipValidation: true });
 
       try {
-        const parsed = await app.objection.models.task.fromJson(req.body.data);
-        await task.$query().patch(parsed);
-        await task.$relatedQuery('labels').unrelate();
-        if (parsed.labels && parsed.labels.length > 0) {
-          [...parsed.labels].forEach(async (label) => {
-            await task.$relatedQuery('labels').relate(label);
-          });
-        }
+        await app.objection.models.task.transaction(async (trx) => {
+          const updateLabels = await app.objection.models.label
+            .query(trx)
+            .select('id')
+            .findByIds(parse.labels || []);
+
+          return app.objection.models.task.query(trx).upsertGraph(
+            {
+              ...parse,
+              id: task.id,
+              creatorId: task.creatorId,
+              labels: updateLabels,
+            },
+            {
+              relate: true,
+              unrelate: true,
+              noUpdate: ['labels'],
+              noInsert: ['labels'],
+              noDelete: ['labels'],
+            },
+          );
+        });
 
         req.flash('info', i18next.t('flash.tasks.patch.success'));
         reply.redirect(app.reverse('tasks'));
