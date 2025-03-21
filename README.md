@@ -6,7 +6,7 @@
 
 ---
 
-Web Manager is a full-featured task management web application built using modern technologies such as Node.js , Knex.js , Objection.js , and Webpack . It provides an intuitive interface for managing tasks, statuses, and labels, making it easy to organize and track your work.
+Web Manager is a full-featured task management web application built using modern technologies such as Node.js , Knex.js , Objection.js and Webpack . It provides an intuitive interface for managing tasks, statuses, and labels, making it easy to organize and track your work.
 
 ---
 
